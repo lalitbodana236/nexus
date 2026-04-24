@@ -1,0 +1,52 @@
+<div class="create-layout">
+  <app-question-sidebar [showQuestionList]="false"></app-question-sidebar>
+
+  <section class="form-shell">
+    <header>
+      <h1>Create Question</h1>
+      <p>Admin-only screen: add questions for Coding, System Design, or Low Level Design.</p>
+      <a class="btn btn-sm btn-outline-light" routerLink="/feed">Back to Dashboard</a>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="card p-4">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input class="form-control" formControlName="title" placeholder="Ex: Longest Substring Without Repeating Characters" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Track</label>
+        <select class="form-select" formControlName="track">
+          <option *ngFor="let option of trackOptions" [ngValue]="option">{{ option }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Difficulty</label>
+        <select class="form-select" formControlName="difficulty">
+          <option *ngFor="let option of difficultyOptions" [ngValue]="option">{{ option }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Prompt</label>
+        <textarea class="form-control" rows="4" formControlName="prompt"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Explanation</label>
+        <textarea class="form-control" rows="5" formControlName="explanation"></textarea>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Tags (comma-separated)</label>
+        <input class="form-control" formControlName="tags" placeholder="Array, Sliding Window" />
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Save Question</button>
+        <a routerLink="/feed" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </section>
+</div>

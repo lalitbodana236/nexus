@@ -1,0 +1,88 @@
+.menu-layout {
+  min-height: 100vh;
+  padding: 1rem;
+  background: #0f172a;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.menu-config-shell {
+  color: #e2e8f0;
+
+  header {
+    margin-bottom: 1rem;
+    display: grid;
+    gap: 0.35rem;
+
+    h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    p {
+      margin: 0;
+      color: #93c5fd;
+    }
+  }
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 460px) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.card {
+  border-radius: 16px;
+  border: 1px solid #334155;
+  background: #111827;
+}
+
+h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.1rem;
+}
+
+.section-block {
+  border-top: 1px solid #334155;
+  padding-top: 0.6rem;
+  margin-top: 0.6rem;
+
+  h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+    color: #bfdbfe;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  li {
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.7rem;
+
+    small {
+      color: #94a3b8;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .menu-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}

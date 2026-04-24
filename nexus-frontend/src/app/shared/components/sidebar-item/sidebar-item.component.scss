@@ -1,0 +1,28 @@
+.sidebar-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(118, 145, 188, 0.28);
+  border-radius: 10px;
+  background: rgba(25, 40, 66, 0.65);
+  color: #e2ebf8;
+  text-align: left;
+  padding: 0.45rem 0.5rem;
+}
+
+.sidebar-item:hover {
+  background: rgba(39, 70, 137, 0.6);
+}
+
+.icon {
+  min-width: 20px;
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.label {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+

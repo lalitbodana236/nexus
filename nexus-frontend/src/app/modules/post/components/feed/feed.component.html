@@ -1,0 +1,132 @@
+<div class="dash-shell">
+  <header class="dash-topbar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <div>
+        <strong>Nexus</strong>
+        <small>Interview Studio</small>
+      </div>
+    </div>
+
+    <nav class="top-nav">
+      <a role="button" [class.active]="currentTrack === 'coding'" (click)="openCoding()">Coding 250</a>
+      <a role="button" [class.active]="currentTrack === 'system-design'" (click)="openSystemDesign()">System Design</a>
+      <a role="button" [class.active]="currentTrack === 'low-level-design'" (click)="openLowLevelDesign()">Low Level Design</a>
+    </nav>
+
+    <div class="top-actions">
+      <button *ngIf="!isLoggedIn" type="button" class="btn btn-sm btn-outline-light" (click)="goToLogin()">Login</button>
+      <button *ngIf="isLoggedIn" type="button" class="btn btn-sm btn-outline-secondary" (click)="logout()">Logout</button>
+      <button *ngIf="isAdmin" type="button" class="btn btn-sm btn-primary" (click)="goToCreate()">Add Question</button>
+      <button *ngIf="isAdmin" type="button" class="btn btn-sm btn-warning" (click)="goToMenuConfig()">Menu Admin</button>
+    </div>
+  </header>
+
+  <div class="dash-grid">
+    <app-question-sidebar [showQuestionList]="false"></app-question-sidebar>
+
+    <main class="main-panel">
+      <section class="panel overview-panel">
+        <div class="hero-copy">
+          <h1>{{ trackTitle }}</h1>
+          <p>{{ trackSubtitle }}</p>
+        </div>
+
+        <div class="stats-grid">
+          <article class="metric-card">
+            <span>Total Questions</span>
+            <strong>{{ questions.length }}</strong>
+          </article>
+          <article class="metric-card">
+            <span>Completed</span>
+            <strong>{{ completedCount }}</strong>
+          </article>
+          <article class="metric-card wide">
+            <span>Difficulty Mix</span>
+            <strong>{{ easyCount }} Easy | {{ mediumCount }} Medium | {{ hardCount }} Hard</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="table-head">
+          <div>
+            <h2>{{ trackTitle }}</h2>
+            <small>Scroll to load more. Click a row to open solution.</small>
+          </div>
+
+          <div class="progress-wrap">
+            <label>Completion {{ completionPercent }}%</label>
+            <div class="progress">
+              <div class="progress-bar" [style.width.%]="completionPercent"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive" (scroll)="onTableScroll($event)">
+          <table class="table align-middle mb-0 question-table">
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Difficulty</th>
+                <th>Status</th>
+                <th>Tags</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId" (click)="openSolution(question.id)">
+                <td>
+                  <div class="title-col">
+                    <strong>{{ question.title }}</strong>
+                    <small>{{ question.id }}</small>
+                  </div>
+                </td>
+                <td>
+                  <span
+                    class="pill"
+                    [ngClass]="{
+                      'pill-easy': question.difficulty === 'Easy',
+                      'pill-medium': question.difficulty === 'Medium',
+                      'pill-hard': question.difficulty === 'Hard'
+                    }"
+                  >
+                    {{ question.difficulty }}
+                  </span>
+                </td>
+                <td>
+                  <span class="status" [class.done]="question.status === 'Done'">{{ question.status }}</span>
+                </td>
+                <td>{{ question.tags.join(', ') }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <aside class="panel right-panel">
+      <section class="calendar-box">
+        <h3>April 2026</h3>
+        <div class="weekdays">
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        </div>
+        <div class="days">
+          <button
+            *ngFor="let day of monthDays"
+            [class.active]="day === 16"
+            [class.completed]="day === 3 || day === 8 || day === 12 || day === 15"
+          >
+            {{ day }}
+          </button>
+        </div>
+      </section>
+
+      <section class="streak-box">
+        <h3>Access Rules</h3>
+        <div class="row"><span>List Access</span><strong>Public</strong></div>
+        <div class="row"><span>Solution Access</span><strong>Login Required</strong></div>
+        <div class="row"><span>Add Questions/Menu</span><strong>Admin Only</strong></div>
+      </section>
+    </aside>
+  </div>
+</div>

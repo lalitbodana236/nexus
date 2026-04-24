@@ -1,0 +1,55 @@
+<div class="menu-layout">
+  <app-question-sidebar [showQuestionList]="false"></app-question-sidebar>
+
+  <section class="menu-config-shell">
+    <header>
+      <h1>Menu Config</h1>
+      <p>Admin-only screen: manage platform navigation without template changes.</p>
+      <a class="btn btn-sm btn-outline-light" routerLink="/feed">Back to Dashboard</a>
+    </header>
+
+    <div class="content-grid">
+      <form class="card p-3" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label class="form-label">Section</label>
+          <select class="form-select" formControlName="sectionId">
+            <option *ngFor="let section of sections" [value]="section.id">{{ section.title }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Label</label>
+          <input class="form-control" formControlName="label" placeholder="Ex: Dynamic Programming" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Path</label>
+          <input class="form-control" formControlName="path" placeholder="Ex: /feed/dynamic-programming" />
+        </div>
+
+        <div class="form-check mb-3">
+          <input id="active" type="checkbox" class="form-check-input" formControlName="active" />
+          <label for="active" class="form-check-label">Set as active</label>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">Add Menu Item</button>
+          <a routerLink="/feed" class="btn btn-outline-secondary">Back</a>
+        </div>
+      </form>
+
+      <div class="card p-3">
+        <h2>Current Menu State</h2>
+        <div class="section-block" *ngFor="let section of sections">
+          <h3>{{ section.title }}</h3>
+          <ul>
+            <li *ngFor="let item of section.items">
+              <span>{{ item.label }}</span>
+              <small>{{ item.path }}</small>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

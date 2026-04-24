@@ -1,0 +1,5 @@
+<button type="button" class="sidebar-item" (click)="itemClick.emit()">
+  <span class="icon">{{ icon }}</span>
+  <span *ngIf="!collapsed" class="label">{{ label }}</span>
+</button>
+

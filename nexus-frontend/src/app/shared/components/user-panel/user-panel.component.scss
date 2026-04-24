@@ -1,0 +1,45 @@
+.user-panel {
+  border-top: 1px solid rgba(120, 146, 190, 0.25);
+  padding-top: 0.65rem;
+}
+
+.user-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(39, 70, 137, 0.6);
+  color: #e2ebf8;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.identity {
+  display: grid;
+
+  strong {
+    color: #e2ebf8;
+    font-size: 0.82rem;
+    line-height: 1.1;
+  }
+
+  small {
+    color: #9eb2d3;
+    text-transform: capitalize;
+    font-size: 0.72rem;
+  }
+}
+
+.menu-items {
+  display: grid;
+  gap: 0.4rem;
+}
+

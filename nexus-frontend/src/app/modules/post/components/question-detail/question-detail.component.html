@@ -1,0 +1,34 @@
+<div class="detail-layout" *ngIf="question">
+  <app-question-sidebar [showQuestionList]="true"></app-question-sidebar>
+
+  <section class="detail-shell">
+    <header class="detail-head">
+      <div>
+        <h1>{{ question.title }}</h1>
+        <p>
+          Track: <strong>{{ question.track }}</strong> | Difficulty: <strong>{{ question.difficulty }}</strong> | Status:
+          <strong>{{ question.status }}</strong>
+        </p>
+      </div>
+      <a routerLink="/feed" class="btn btn-outline-light">Back to Public Lists</a>
+    </header>
+
+    <article class="detail-card">
+      <h2>Question</h2>
+      <p>{{ question.prompt }}</p>
+    </article>
+
+    <article class="detail-card">
+      <h2>Solution / Explanation</h2>
+      <p>{{ question.explanation }}</p>
+      <div class="tag-row">
+        <span class="badge text-bg-info" *ngFor="let tag of question.tags">{{ tag }}</span>
+      </div>
+    </article>
+
+    <div class="nav-row">
+      <button type="button" class="btn btn-outline-info" (click)="goPrev()" [disabled]="!prevQuestion">Previous</button>
+      <button type="button" class="btn btn-outline-info" (click)="goNext()" [disabled]="!nextQuestion">Next</button>
+    </div>
+  </section>
+</div>

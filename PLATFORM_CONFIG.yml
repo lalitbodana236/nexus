@@ -1,0 +1,13 @@
+platform:
+  name: project-nexus
+  display-name: Project-Nexus
+  tagline: Student-focused professional community platform
+
+project:
+  group: com.nexus.platform
+  artifact: nexus-core
+  base-package: com.nexus.platform
+
+docs:
+  source-of-truth: PLATFORM_CONFIG.yml
+  tracking-log: PROJECT_CONTEXT_AND_PROGRESS_LOG.md

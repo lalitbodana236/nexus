@@ -1,0 +1,33 @@
+<section class="user-panel">
+  <div class="user-head">
+    <div class="avatar">{{ initials }}</div>
+    <div *ngIf="!collapsed" class="identity">
+      <strong>{{ username }}</strong>
+      <small>{{ role }}</small>
+    </div>
+  </div>
+
+  <div class="menu-items">
+    <app-sidebar-item
+      [collapsed]="collapsed"
+      icon="P"
+      label="Profile"
+      (itemClick)="profileClick.emit()"
+    ></app-sidebar-item>
+
+    <app-sidebar-item
+      [collapsed]="collapsed"
+      icon="S"
+      label="Settings"
+      (itemClick)="settingsClick.emit()"
+    ></app-sidebar-item>
+
+    <app-sidebar-item
+      [collapsed]="collapsed"
+      icon="L"
+      label="Logout"
+      (itemClick)="logoutClick.emit()"
+    ></app-sidebar-item>
+  </div>
+</section>
+

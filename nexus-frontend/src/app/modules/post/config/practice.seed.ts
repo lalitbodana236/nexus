@@ -1,0 +1,140 @@
+import { PracticeMenuSection, Question } from '../models/practice.models';
+
+export const PRACTICE_MENU_SEED: PracticeMenuSection[] = [
+  {
+    id: 'coding',
+    title: 'Coding Interviews',
+    items: [
+      { id: 'coding-250', label: 'Top 250 Most Asked', path: '/feed/track/coding', active: true }
+    ]
+  },
+  {
+    id: 'system',
+    title: 'System Design',
+    items: [{ id: 'system-design', label: 'System Design Questions', path: '/feed/track/system-design' }]
+  },
+  {
+    id: 'low-level',
+    title: 'Low Level Design',
+    items: [{ id: 'lld', label: 'Low Level Design Questions', path: '/feed/track/low-level-design' }]
+  }
+];
+
+const CODING_BASE_TITLES = [
+  'Two Sum',
+  'Contains Duplicate',
+  'Valid Anagram',
+  'Group Anagrams',
+  'Top K Frequent Elements',
+  'Product of Array Except Self',
+  'Valid Sudoku',
+  'Encode and Decode Strings',
+  'Longest Consecutive Sequence',
+  'Best Time to Buy and Sell Stock',
+  'Longest Substring Without Repeating Characters',
+  'Longest Repeating Character Replacement',
+  'Permutation in String',
+  'Minimum Window Substring',
+  'Valid Palindrome',
+  '3Sum',
+  'Container With Most Water',
+  'Trapping Rain Water',
+  'Binary Search',
+  'Search in Rotated Sorted Array',
+  'Find Minimum in Rotated Sorted Array',
+  'Koko Eating Bananas',
+  'Time Based Key-Value Store',
+  'Median of Two Sorted Arrays',
+  'Reverse Linked List',
+  'Merge Two Sorted Lists',
+  'Reorder List',
+  'Remove Nth Node From End of List',
+  'Copy List with Random Pointer',
+  'Linked List Cycle'
+];
+
+function buildCodingQuestions(): Question[] {
+  return Array.from({ length: 250 }, (_, index) => {
+    const baseTitle = CODING_BASE_TITLES[index] ?? `Most Asked Coding Question ${index + 1}`;
+    const n = index + 1;
+    const difficulty = n % 13 === 0 ? 'Hard' : n % 4 === 0 ? 'Medium' : 'Easy';
+
+    return {
+      id: `coding-${n}`,
+      title: baseTitle,
+      track: 'coding',
+      difficulty,
+      status: n <= 41 ? 'Done' : 'Todo',
+      favorite: n % 9 === 0,
+      prompt: `Solve ${baseTitle} using an optimal approach and explain time/space complexity.`,
+      explanation:
+        `Break the problem into a pattern-recognition step, choose the right data structure, and validate with edge cases for ${baseTitle}.`,
+      tags: difficulty === 'Hard' ? ['Patterns', 'Optimization'] : ['Array', 'Hashing'],
+      createdAt: new Date(Date.UTC(2026, 0, 1 + (n % 28))).toISOString()
+    };
+  });
+}
+
+function buildSystemDesignQuestions(): Question[] {
+  const titles = [
+    'Design URL Shortener',
+    'Design Instagram Feed',
+    'Design Rate Limiter',
+    'Design Notification Service',
+    'Design Chat System',
+    'Design Video Streaming Service',
+    'Design API Gateway',
+    'Design Search Autocomplete',
+    'Design Distributed Cache',
+    'Design Job Scheduler'
+  ];
+
+  return titles.map((title, index) => ({
+    id: `system-${index + 1}`,
+    title,
+    track: 'system-design',
+    difficulty: index > 6 ? 'Hard' : 'Medium',
+    status: 'Todo',
+    favorite: false,
+    prompt: `Design ${title} with scale assumptions, data flow, APIs, and reliability considerations.`,
+    explanation:
+      `Start with requirements, define APIs and data model, then discuss scaling, consistency, and failure recovery for ${title}.`,
+    tags: ['Scalability', 'Architecture'],
+    createdAt: new Date(Date.UTC(2026, 1, index + 1)).toISOString()
+  }));
+}
+
+function buildLowLevelDesignQuestions(): Question[] {
+  const titles = [
+    'Design Parking Lot',
+    'Design Library Management System',
+    'Design Elevator System',
+    'Design Splitwise',
+    'Design BookMyShow',
+    'Design Tic-Tac-Toe',
+    'Design Vending Machine',
+    'Design Logger Framework',
+    'Design ATM',
+    'Design Ride Sharing System'
+  ];
+
+  return titles.map((title, index) => ({
+    id: `lld-${index + 1}`,
+    title,
+    track: 'low-level-design',
+    difficulty: index > 6 ? 'Hard' : 'Medium',
+    status: 'Todo',
+    favorite: false,
+    prompt: `Design classes, interfaces, and interactions for ${title}.`,
+    explanation:
+      `Identify entities, assign responsibilities, apply SOLID principles, and model key workflows for ${title}.`,
+    tags: ['OOP', 'Design Patterns'],
+    createdAt: new Date(Date.UTC(2026, 2, index + 1)).toISOString()
+  }));
+}
+
+export const QUESTION_SEED: Question[] = [
+  ...buildCodingQuestions(),
+  ...buildSystemDesignQuestions(),
+  ...buildLowLevelDesignQuestions()
+];

@@ -1,0 +1,28 @@
+# Copy this file to application-local.properties and set your local secrets.
+
+spring.datasource.url=jdbc:mysql://localhost:3306/nexus_db?useSSL=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# Local OAuth2 secrets for Google login.
+spring.security.oauth2.client.registration.google.client-id=your-google-client-id.apps.googleusercontent.com
+spring.security.oauth2.client.registration.google.client-secret=your-google-client-secret
+
+# Local session/cookie settings.
+server.servlet.session.timeout=20m
+server.servlet.session.cookie.http-only=true
+server.servlet.session.cookie.secure=false
+server.servlet.session.cookie.same-site=lax
+server.servlet.session.tracking-modes=cookie
+
+# Security policy config.
+app.security.require-ssl=false
+app.security.admin-emails=
+app.security.cors.allowed-origins=http://localhost:3000,http://localhost:4200
+app.security.cors.allowed-methods=GET,POST,PUT,PATCH,DELETE,OPTIONS
+app.security.cors.allowed-headers=Authorization,Content-Type,X-Requested-With,X-CSRF-TOKEN
+app.security.rate-limit.auth.max-requests=40
+app.security.rate-limit.auth.window-seconds=60
+app.security.frontend.success-url=http://localhost:3000/auth/callback?login=success
+app.security.frontend.failure-url=http://localhost:3000/login?error=oauth

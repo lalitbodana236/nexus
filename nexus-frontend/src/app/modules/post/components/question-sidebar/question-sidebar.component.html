@@ -1,0 +1,39 @@
+<aside class="q-sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-top">
+    <button type="button" class="btn btn-sm btn-outline-light" (click)="goBack()">Back</button>
+    <button type="button" class="btn btn-sm btn-outline-info" (click)="toggle()">
+      {{ isCollapsed ? 'Expand' : 'Collapse' }}
+    </button>
+  </div>
+
+  <div class="sidebar-body">
+    <div class="question-list" *ngIf="!isCollapsed && showQuestionList" (scroll)="onScroll($event)">
+      <h3>All Questions</h3>
+      <small>{{ questions.length }} items</small>
+
+      <button
+        type="button"
+        class="q-item"
+        *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId"
+        (click)="openQuestion(question.id)"
+      >
+        <span class="q-title">{{ question.title }}</span>
+        <span class="q-meta">{{ question.track }} | {{ question.difficulty }}</span>
+      </button>
+    </div>
+
+    <div class="empty-note" *ngIf="!isCollapsed && !showQuestionList">
+      <h3>User Panel</h3>
+      <small>Select a question to load question list in sidebar.</small>
+    </div>
+
+    <app-user-panel
+      [collapsed]="isCollapsed"
+      [username]="username"
+      [role]="roleLabel"
+      (profileClick)="openProfile()"
+      (settingsClick)="openSettings()"
+      (logoutClick)="logout()"
+    ></app-user-panel>
+  </div>
+</aside>

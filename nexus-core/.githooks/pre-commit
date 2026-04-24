@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PATTERN='(AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16}|AIza[0-9A-Za-z\-_]{35}|GOCSPX-[0-9A-Za-z\-_]{20,}|-----BEGIN (RSA |EC |OPENSSH |)PRIVATE KEY-----|xox[baprs]-[0-9A-Za-z-]+)'
+
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+if [[ -z "${staged_files}" ]]; then
+  exit 0
+fi
+
+echo "Running staged secret scan..."
+
+while IFS= read -r file; do
+  [[ -f "$file" ]] || continue
+  if grep -nE "$PATTERN" "$file" >/dev/null 2>&1; then
+    echo "Potential secret detected in $file"
+    grep -nE "$PATTERN" "$file" || true
+    echo "Commit blocked. Remove secret or use secure secret storage."
+    exit 1
+  fi
+done <<< "$staged_files"
+
+echo "Secret scan passed."
