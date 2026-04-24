@@ -85,6 +85,47 @@ export class FeedComponent implements OnInit {
     return Math.round((this.completedCount / this.questions.length) * 100);
   }
 
+  get remainingCount(): number {
+    return Math.max(this.questions.length - this.completedCount, 0);
+  }
+
+  get nextMilestone(): number {
+    const milestones = [25, 50, 75, 100, 150, 200, 250];
+    return milestones.find((milestone) => milestone > this.completedCount) ?? this.questions.length;
+  }
+
+  get milestoneRemaining(): number {
+    return Math.max(this.nextMilestone - this.completedCount, 0);
+  }
+
+  get masteryLabel(): string {
+    if (this.completionPercent >= 80) {
+      return 'Interview Ready';
+    }
+
+    if (this.completionPercent >= 45) {
+      return 'Momentum Builder';
+    }
+
+    if (this.completionPercent > 0) {
+      return 'Foundation Mode';
+    }
+
+    return 'Start Today';
+  }
+
+  get focusPrompt(): string {
+    if (this.currentTrack === 'coding') {
+      return 'Solve 3 patterns, mark them done, then review one previous mistake.';
+    }
+
+    if (this.currentTrack === 'system-design') {
+      return 'Draft requirements, APIs, storage, scaling risks, and trade-offs.';
+    }
+
+    return 'Model entities, responsibilities, interfaces, and one clean workflow.';
+  }
+
   get isAdmin(): boolean {
     return this.role === 'admin';
   }

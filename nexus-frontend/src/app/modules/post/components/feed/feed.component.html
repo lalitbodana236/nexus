@@ -36,21 +36,44 @@
 
     <main class="main-panel">
       <section class="panel overview-panel">
-        <div class="hero-copy">
-          <h1>{{ trackTitle }}</h1>
-          <p>{{ trackSubtitle }}</p>
+        <div class="hero-band">
+          <div class="hero-copy">
+            <span class="eyebrow">{{ masteryLabel }}</span>
+            <h1>{{ trackTitle }}</h1>
+            <p>{{ trackSubtitle }}</p>
+          </div>
+
+          <div class="mastery-card">
+            <div class="ring" [style.--progress.%]="completionPercent">
+              <strong>{{ completionPercent }}%</strong>
+              <span>complete</span>
+            </div>
+            <div>
+              <small>Next milestone</small>
+              <strong>{{ nextMilestone }} solved</strong>
+              <span>{{ milestoneRemaining }} left</span>
+            </div>
+          </div>
         </div>
 
         <div class="stats-grid">
           <article class="metric-card">
+            <span class="metric-icon">Σ</span>
             <span>Total Questions</span>
             <strong>{{ questions.length }}</strong>
           </article>
           <article class="metric-card">
+            <span class="metric-icon done-icon">✓</span>
             <span>Completed</span>
             <strong>{{ completedCount }}</strong>
           </article>
+          <article class="metric-card">
+            <span class="metric-icon">→</span>
+            <span>Remaining</span>
+            <strong>{{ remainingCount }}</strong>
+          </article>
           <article class="metric-card wide">
+            <span class="metric-icon mix-icon">◆</span>
             <span>Difficulty Mix</span>
             <strong>{{ easyCount }} Easy | {{ mediumCount }} Medium | {{ hardCount }} Hard</strong>
           </article>
@@ -61,7 +84,7 @@
         <div class="table-head">
           <div>
             <h2>{{ trackTitle }}</h2>
-            <small>Scroll to load more. Click a row to open solution.</small>
+            <small>Pick one, solve it, mark it complete, and keep the streak moving.</small>
           </div>
 
           <div class="progress-wrap">
@@ -84,7 +107,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId" (click)="openSolution(question.id)">
+              <tr
+                *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId"
+                [class.completed-row]="question.status === 'Done'"
+                (click)="openSolution(question.id)"
+              >
                 <td class="check-col">
                   <input
                     type="checkbox"
@@ -125,6 +152,19 @@
     </main>
 
     <aside class="panel right-panel">
+      <section class="mission-card">
+        <span class="eyebrow">Today&apos;s Mission</span>
+        <h3>Build visible progress</h3>
+        <p>{{ focusPrompt }}</p>
+        <div class="mission-progress">
+          <span>{{ completedCount }} solved</span>
+          <strong>{{ completionPercent }}%</strong>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" [style.width.%]="completionPercent"></div>
+        </div>
+      </section>
+
       <section class="calendar-box">
         <h3>April 2026</h3>
         <div class="weekdays">
@@ -140,7 +180,6 @@
           </button>
         </div>
       </section>
-
     </aside>
   </div>
 </div>
