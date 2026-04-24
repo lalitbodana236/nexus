@@ -16,14 +16,14 @@
     </div>
 
     <nav class="track-nav" *ngIf="!isCollapsed && !showQuestionList" aria-label="Practice tracks">
-      <h3>Practice Tracks</h3>
-      <small>Choose a focused interview path.</small>
+      <h3>Topics</h3>
+      <small>Choose track and learn concepts first.</small>
 
       <button type="button" class="track-item" [class.active]="currentTrack === 'coding'" (click)="openTrack('coding')">
-        <span class="track-icon">C</span>
+        <span class="track-icon">D</span>
         <span>
-          <strong>Coding 250</strong>
-          <small>Algorithms and patterns</small>
+          <strong>DSA</strong>
+          <small>Topic: Arrays & Hashing</small>
         </span>
       </button>
 
@@ -31,7 +31,7 @@
         <span class="track-icon">S</span>
         <span>
           <strong>System Design</strong>
-          <small>Architecture rounds</small>
+          <small>Topic: Requirements & APIs</small>
         </span>
       </button>
 
@@ -39,7 +39,40 @@
         <span class="track-icon">L</span>
         <span>
           <strong>Low Level Design</strong>
-          <small>OOP and SOLID</small>
+          <small>Topic: Entities & SOLID</small>
+        </span>
+      </button>
+
+      <div class="topic-list" *ngIf="mode === 'theory'">
+        <small>Current Track Topics</small>
+        <span class="topic-chip" *ngFor="let topic of learningTopics">{{ topic }}</span>
+      </div>
+
+      <div class="nav-divider"></div>
+      <h3>Backend Roadmap</h3>
+      <small>Content-ready tracks for the next phases.</small>
+
+      <button type="button" class="track-item soon" disabled>
+        <span class="track-icon">J</span>
+        <span>
+          <strong>Java</strong>
+          <small>Topic: Core Java</small>
+        </span>
+      </button>
+
+      <button type="button" class="track-item soon" disabled>
+        <span class="track-icon">SB</span>
+        <span>
+          <strong>Spring Boot</strong>
+          <small>Topic: REST API Basics</small>
+        </span>
+      </button>
+
+      <button type="button" class="track-item soon" disabled>
+        <span class="track-icon">DK</span>
+        <span>
+          <strong>Docker & Kubernetes</strong>
+          <small>Topic: Container Fundamentals</small>
         </span>
       </button>
     </nav>

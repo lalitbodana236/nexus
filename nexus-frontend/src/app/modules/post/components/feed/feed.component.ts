@@ -14,12 +14,13 @@ import { PracticeStoreService } from '../../services/practice-store.service';
 })
 export class FeedComponent implements OnInit {
   allQuestions: Question[] = [];
+  trackQuestions: Question[] = [];
   questions: Question[] = [];
   role: UserRole = 'guest';
   visibleCount = 40;
   currentTrack: QuestionTrack = 'coding';
   isSidebarCollapsed = false;
-  readonly monthDays = Array.from({ length: 30 }, (_, index) => index + 1);
+  mode: 'theory' | 'practice' = 'practice';
 
   constructor(
     private readonly store: PracticeStoreService,
@@ -61,69 +62,52 @@ export class FeedComponent implements OnInit {
     return this.questions.slice(0, this.visibleCount);
   }
 
-  get completedCount(): number {
-    return this.questions.filter((item) => item.status === 'Done').length;
-  }
-
-  get easyCount(): number {
-    return this.questions.filter((item) => item.difficulty === 'Easy').length;
-  }
-
-  get mediumCount(): number {
-    return this.questions.filter((item) => item.difficulty === 'Medium').length;
-  }
-
-  get hardCount(): number {
-    return this.questions.filter((item) => item.difficulty === 'Hard').length;
-  }
-
-  get completionPercent(): number {
-    if (this.questions.length === 0) {
-      return 0;
-    }
-
-    return Math.round((this.completedCount / this.questions.length) * 100);
-  }
-
-  get remainingCount(): number {
-    return Math.max(this.questions.length - this.completedCount, 0);
-  }
-
-  get nextMilestone(): number {
-    const milestones = [25, 50, 75, 100, 150, 200, 250];
-    return milestones.find((milestone) => milestone > this.completedCount) ?? this.questions.length;
-  }
-
-  get milestoneRemaining(): number {
-    return Math.max(this.nextMilestone - this.completedCount, 0);
-  }
-
-  get masteryLabel(): string {
-    if (this.completionPercent >= 80) {
-      return 'Interview Ready';
-    }
-
-    if (this.completionPercent >= 45) {
-      return 'Momentum Builder';
-    }
-
-    if (this.completionPercent > 0) {
-      return 'Foundation Mode';
-    }
-
-    return 'Start Today';
-  }
-
-  get focusPrompt(): string {
+  get conceptTitle(): string {
     if (this.currentTrack === 'coding') {
-      return 'Solve 3 patterns, mark them done, then review one previous mistake.';
+      return 'Concept First: DSA Patterns';
     }
 
     if (this.currentTrack === 'system-design') {
-      return 'Draft requirements, APIs, storage, scaling risks, and trade-offs.';
+      return 'Concept First: System Design Thinking';
     }
 
-    return 'Model entities, responsibilities, interfaces, and one clean workflow.';
+    return 'Concept First: Low Level Design';
+  }
+
+  get conceptSummary(): string {
+    if (this.currentTrack === 'coding') {
+      return 'Start with arrays, hashing, two pointers, sliding window, recursion, trees, graphs, dynamic programming, and complexity analysis.';
+    }
+
+    if (this.currentTrack === 'system-design') {
+      return 'Understand requirements, APIs, data models, capacity estimates, caching, queues, consistency, and failure handling.';
+    }
+
+    return 'Learn entities, responsibilities, interfaces, SOLID, design patterns, and how to convert requirements into clean object models.';
+  }
+
+  get previewTopic(): string {
+    if (this.currentTrack === 'coding') {
+      return 'Arrays & Hashing';
+    }
+
+    if (this.currentTrack === 'system-design') {
+      return 'Requirements and API Design';
+    }
+
+    return 'Entities and Responsibilities';
+  }
+
+  get conceptPoints(): string[] {
+    if (this.currentTrack === 'coding') {
+      return ['Arrays & Hashing', 'Two Pointers & Sliding Window', 'Trees, Graphs, Dynamic Programming'];
+    }
+
+    if (this.currentTrack === 'system-design') {
+      return ['Requirements and APIs', 'Capacity, Data Modeling, Caching', 'Reliability, Scale, and Trade-offs'];
+    }
+
+    return ['Entities and Responsibilities', 'Interfaces, SOLID, and Patterns', 'Modeling Real Workflows'];
   }
 
   get isAdmin(): boolean {
@@ -136,22 +120,18 @@ export class FeedComponent implements OnInit {
 
   get trackTitle(): string {
     if (this.currentTrack === 'system-design') {
-      return 'System Design Questions';
+      return 'System Design Practice';
     }
 
     if (this.currentTrack === 'low-level-design') {
-      return 'Low Level Design Questions';
+      return 'Low Level Design Practice';
     }
 
-    return 'Top 250 Most Asked Coding Questions';
+    return 'DSA Practice';
   }
 
   get trackSubtitle(): string {
-    if (this.currentTrack === 'coding') {
-      return 'Everyone can browse the full list. Solutions are available only after login. Admins can curate questions and menu.';
-    }
-
-    return 'This track is public to browse. Open any item to view solution details (login required).';
+    return 'Switch between theory and practice from the left panel.';
   }
 
   openSolution(questionId: string): void {
@@ -197,6 +177,10 @@ export class FeedComponent implements OnInit {
     this.store.setQuestionCompleted(question.id, target.checked);
   }
 
+  setMode(mode: 'theory' | 'practice'): void {
+    this.mode = mode;
+  }
+
   onTableScroll(event: Event): void {
     const target = event.target as HTMLElement;
     const nearBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 120;
@@ -211,6 +195,7 @@ export class FeedComponent implements OnInit {
   }
 
   private applyTrackFilter(): void {
-    this.questions = this.allQuestions.filter((item) => item.track === this.currentTrack);
+    this.trackQuestions = this.allQuestions.filter((item) => item.track === this.currentTrack);
+    this.questions = [...this.trackQuestions];
   }
 }

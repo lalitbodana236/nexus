@@ -3,9 +3,9 @@ import { PracticeMenuSection, Question } from '../models/practice.models';
 export const PRACTICE_MENU_SEED: PracticeMenuSection[] = [
   {
     id: 'coding',
-    title: 'Coding Interviews',
+    title: 'Practice',
     items: [
-      { id: 'coding-250', label: 'Top 250 Most Asked', path: '/feed/track/coding', active: true }
+      { id: 'dsa', label: 'DSA', path: '/feed/track/coding', active: true }
     ]
   },
   {

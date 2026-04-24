@@ -18,168 +18,116 @@
     </div>
 
     <nav class="top-nav">
-      <a role="button" [class.active]="currentTrack === 'coding'" (click)="openCoding()">Coding 250</a>
+      <span class="nav-section" [class.is-learning]="mode === 'theory'" [class.is-practice]="mode === 'practice'">
+        {{ mode === 'theory' ? 'Learning' : 'Practice' }}
+      </span>
+      <a role="button" [class.active]="currentTrack === 'coding'" (click)="openCoding()">DSA</a>
       <a role="button" [class.active]="currentTrack === 'system-design'" (click)="openSystemDesign()">System Design</a>
       <a role="button" [class.active]="currentTrack === 'low-level-design'" (click)="openLowLevelDesign()">Low Level Design</a>
     </nav>
 
     <div class="top-actions">
+      <div class="header-mode-switch" role="tablist" aria-label="Workspace mode">
+        <button type="button" [class.active]="mode === 'theory'" (click)="setMode('theory')">Learn</button>
+        <button type="button" [class.active]="mode === 'practice'" (click)="setMode('practice')">Practice</button>
+      </div>
       <button *ngIf="!isLoggedIn" type="button" class="btn btn-sm btn-outline-light" (click)="goToLogin()">Login</button>
-      <button *ngIf="isLoggedIn" type="button" class="btn btn-sm btn-outline-secondary" (click)="logout()">Logout</button>
       <button *ngIf="isAdmin" type="button" class="btn btn-sm btn-primary" (click)="goToCreate()">Add Question</button>
       <button *ngIf="isAdmin" type="button" class="btn btn-sm btn-warning" (click)="goToMenuConfig()">Menu Admin</button>
     </div>
   </header>
 
   <div class="dash-grid" [class.sidebar-collapsed]="isSidebarCollapsed">
-    <app-question-sidebar [showQuestionList]="false" [currentTrack]="currentTrack"></app-question-sidebar>
+    <app-question-sidebar
+      [showQuestionList]="false"
+      [currentTrack]="currentTrack"
+      [mode]="mode"
+      (modeChange)="setMode($event)"
+    ></app-question-sidebar>
 
     <main class="main-panel">
-      <section class="panel overview-panel">
-        <div class="hero-band">
-          <div class="hero-copy">
-            <span class="eyebrow">{{ masteryLabel }}</span>
+      <section class="panel workspace-panel">
+        <div class="workspace-head">
+          <div>
             <h1>{{ trackTitle }}</h1>
             <p>{{ trackSubtitle }}</p>
           </div>
+        </div>
 
-          <div class="mastery-card">
-            <div class="ring" [style.--progress.%]="completionPercent">
-              <strong>{{ completionPercent }}%</strong>
-              <span>complete</span>
-            </div>
-            <div>
-              <small>Next milestone</small>
-              <strong>{{ nextMilestone }} solved</strong>
-              <span>{{ milestoneRemaining }} left</span>
-            </div>
+        <section class="theory-panel" *ngIf="mode === 'theory'">
+          <h2>{{ conceptTitle }}</h2>
+          <p>{{ conceptSummary }}</p>
+          <div class="topic-preview">
+            <strong>Preview Topic:</strong>
+            <span>{{ previewTopic }}</span>
           </div>
-        </div>
+          <ul>
+            <li *ngFor="let point of conceptPoints">{{ point }}</li>
+          </ul>
+          <button type="button" class="action-btn" (click)="setMode('practice')">Go to Practice Questions</button>
+        </section>
 
-        <div class="stats-grid">
-          <article class="metric-card">
-            <span class="metric-icon">Σ</span>
-            <span>Total Questions</span>
-            <strong>{{ questions.length }}</strong>
-          </article>
-          <article class="metric-card">
-            <span class="metric-icon done-icon">✓</span>
-            <span>Completed</span>
-            <strong>{{ completedCount }}</strong>
-          </article>
-          <article class="metric-card">
-            <span class="metric-icon">→</span>
-            <span>Remaining</span>
-            <strong>{{ remainingCount }}</strong>
-          </article>
-          <article class="metric-card wide">
-            <span class="metric-icon mix-icon">◆</span>
-            <span>Difficulty Mix</span>
-            <strong>{{ easyCount }} Easy | {{ mediumCount }} Medium | {{ hardCount }} Hard</strong>
-          </article>
-        </div>
-      </section>
-
-      <section class="panel table-panel">
-        <div class="table-head">
-          <div>
-            <h2>{{ trackTitle }}</h2>
-            <small>Pick one, solve it, mark it complete, and keep the streak moving.</small>
+        <section class="practice-panel" *ngIf="mode === 'practice'">
+          <div class="table-head">
+            <h2>Question List</h2>
+            <small>{{ questions.length }} questions</small>
           </div>
 
-          <div class="progress-wrap">
-            <label>Completion {{ completionPercent }}%</label>
-            <div class="progress">
-              <div class="progress-bar" [style.width.%]="completionPercent"></div>
-            </div>
+          <div class="table-responsive" (scroll)="onTableScroll($event)">
+            <table class="table align-middle mb-0 question-table">
+              <thead>
+                <tr>
+                  <th class="check-col">Done</th>
+                  <th>Question</th>
+                  <th>Difficulty</th>
+                  <th>Status</th>
+                  <th>Tags</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId"
+                  [class.completed-row]="question.status === 'Done'"
+                  (click)="openSolution(question.id)"
+                >
+                  <td class="check-col">
+                    <input
+                      type="checkbox"
+                      class="complete-check"
+                      [checked]="question.status === 'Done'"
+                      (click)="$event.stopPropagation()"
+                      (change)="toggleCompleted($event, question)"
+                      [attr.aria-label]="'Mark ' + question.title + ' as completed'"
+                    />
+                  </td>
+                  <td>
+                    <div class="title-col">
+                      <strong>{{ question.title }}</strong>
+                      <small>{{ question.id }}</small>
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      class="pill"
+                      [ngClass]="{
+                        'pill-easy': question.difficulty === 'Easy',
+                        'pill-medium': question.difficulty === 'Medium',
+                        'pill-hard': question.difficulty === 'Hard'
+                      }"
+                    >
+                      {{ question.difficulty }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="status" [class.done]="question.status === 'Done'">{{ question.status }}</span>
+                  </td>
+                  <td>{{ question.tags.join(', ') }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-
-        <div class="table-responsive" (scroll)="onTableScroll($event)">
-          <table class="table align-middle mb-0 question-table">
-            <thead>
-              <tr>
-                <th class="check-col">Done</th>
-                <th>Question</th>
-                <th>Difficulty</th>
-                <th>Status</th>
-                <th>Tags</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId"
-                [class.completed-row]="question.status === 'Done'"
-                (click)="openSolution(question.id)"
-              >
-                <td class="check-col">
-                  <input
-                    type="checkbox"
-                    class="complete-check"
-                    [checked]="question.status === 'Done'"
-                    (click)="$event.stopPropagation()"
-                    (change)="toggleCompleted($event, question)"
-                    [attr.aria-label]="'Mark ' + question.title + ' as completed'"
-                  />
-                </td>
-                <td>
-                  <div class="title-col">
-                    <strong>{{ question.title }}</strong>
-                    <small>{{ question.id }}</small>
-                  </div>
-                </td>
-                <td>
-                  <span
-                    class="pill"
-                    [ngClass]="{
-                      'pill-easy': question.difficulty === 'Easy',
-                      'pill-medium': question.difficulty === 'Medium',
-                      'pill-hard': question.difficulty === 'Hard'
-                    }"
-                  >
-                    {{ question.difficulty }}
-                  </span>
-                </td>
-                <td>
-                  <span class="status" [class.done]="question.status === 'Done'">{{ question.status }}</span>
-                </td>
-                <td>{{ question.tags.join(', ') }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        </section>
       </section>
     </main>
-
-    <aside class="panel right-panel">
-      <section class="mission-card">
-        <span class="eyebrow">Today&apos;s Mission</span>
-        <h3>Build visible progress</h3>
-        <p>{{ focusPrompt }}</p>
-        <div class="mission-progress">
-          <span>{{ completedCount }} solved</span>
-          <strong>{{ completionPercent }}%</strong>
-        </div>
-        <div class="progress">
-          <div class="progress-bar" [style.width.%]="completionPercent"></div>
-        </div>
-      </section>
-
-      <section class="calendar-box">
-        <h3>April 2026</h3>
-        <div class="weekdays">
-          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-        </div>
-        <div class="days">
-          <button
-            *ngFor="let day of monthDays"
-            [class.active]="day === 16"
-            [class.completed]="day === 3 || day === 8 || day === 12 || day === 15"
-          >
-            {{ day }}
-          </button>
-        </div>
-      </section>
-    </aside>
   </div>
 </div>

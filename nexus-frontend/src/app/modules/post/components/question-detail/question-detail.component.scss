@@ -60,6 +60,7 @@
 
 .top-nav {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
 
   a {
@@ -77,6 +78,13 @@
       color: #fff;
     }
   }
+}
+
+.nav-section {
+  color: #8ec5ff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .detail-layout {

@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
@@ -16,6 +16,8 @@ import { PracticeStoreService } from '../../services/practice-store.service';
 export class QuestionSidebarComponent implements OnInit {
   @Input() showQuestionList = false;
   @Input() currentTrack: Question['track'] = 'coding';
+  @Input() mode: 'theory' | 'practice' = 'practice';
+  @Output() modeChange = new EventEmitter<'theory' | 'practice'>();
 
   isCollapsed = false;
   questions: Question[] = [];
@@ -64,6 +66,18 @@ export class QuestionSidebarComponent implements OnInit {
     return this.questions.slice(0, this.visibleCount);
   }
 
+  get learningTopics(): string[] {
+    if (this.currentTrack === 'coding') {
+      return ['Arrays', 'Hashing', 'Two Pointers', 'Sliding Window', 'Trees', 'Graphs', 'Dynamic Programming'];
+    }
+
+    if (this.currentTrack === 'system-design') {
+      return ['Requirements', 'APIs', 'Data Modeling', 'Caching', 'Queues', 'Consistency', 'Reliability'];
+    }
+
+    return ['Entities', 'Responsibilities', 'Interfaces', 'SOLID', 'Design Patterns', 'Workflow Modeling'];
+  }
+
   toggle(): void {
     this.sidebarState.toggle();
   }
@@ -74,6 +88,10 @@ export class QuestionSidebarComponent implements OnInit {
 
   openTrack(track: Question['track']): void {
     this.router.navigate(['/feed/track', track]);
+  }
+
+  setMode(mode: 'theory' | 'practice'): void {
+    this.modeChange.emit(mode);
   }
 
   onScroll(event: Event): void {

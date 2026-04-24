@@ -95,6 +95,44 @@
     margin-top: 0.1rem;
     font-size: 0.72rem;
   }
+
+  &.soon {
+    opacity: 0.72;
+    cursor: default;
+
+    &:hover {
+      background: rgba(25, 40, 66, 0.65);
+      border-color: rgba(118, 145, 188, 0.28);
+    }
+  }
+}
+
+.topic-list {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+
+  small {
+    width: 100%;
+    margin-bottom: 0.15rem;
+  }
+}
+
+.topic-chip {
+  border: 1px solid rgba(130, 177, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(30, 58, 138, 0.24);
+  color: #c8d5ea;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.14rem 0.5rem;
+}
+
+.nav-divider {
+  height: 1px;
+  margin: 0.8rem 0;
+  background: rgba(120, 146, 190, 0.22);
 }
 
 .track-icon {
