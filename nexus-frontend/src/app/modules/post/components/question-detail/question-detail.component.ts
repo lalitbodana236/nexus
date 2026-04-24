@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { SidebarStateService } from '../../../../core/services/sidebar-state.service';
+import { CodeViewerTab } from '../../../../shared/components/code-viewer/code-viewer.component';
 import { Question } from '../../models/practice.models';
 import { PracticeStoreService } from '../../services/practice-store.service';
 
@@ -14,14 +16,23 @@ export class QuestionDetailComponent implements OnInit {
   question?: Question;
   prevQuestion?: Question;
   nextQuestion?: Question;
+  codeTabs: CodeViewerTab[] = [];
+  activeCodeTab?: CodeViewerTab;
+  isSidebarCollapsed = false;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly store: PracticeStoreService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly sidebarState: SidebarStateService
   ) {}
 
   ngOnInit(): void {
+    this.sidebarState.initForViewport(window.innerWidth);
+    this.sidebarState.collapsed$.subscribe((collapsed) => {
+      this.isSidebarCollapsed = collapsed;
+    });
+
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
 
@@ -41,6 +52,12 @@ export class QuestionDetailComponent implements OnInit {
       this.question = questions[currentIndex];
       this.prevQuestion = currentIndex > 0 ? questions[currentIndex - 1] : undefined;
       this.nextQuestion = currentIndex < questions.length - 1 ? questions[currentIndex + 1] : undefined;
+      this.codeTabs = (this.question.solutions ?? []).map((solution) => ({
+        label: solution.label,
+        language: solution.language,
+        code: solution.code
+      }));
+      this.activeCodeTab = this.codeTabs[0];
     });
   }
 
@@ -54,5 +71,25 @@ export class QuestionDetailComponent implements OnInit {
     if (this.nextQuestion) {
       this.router.navigate(['/feed/solutions', this.nextQuestion.id]);
     }
+  }
+
+  toggleSidebar(): void {
+    this.sidebarState.toggle();
+  }
+
+  onCodeTabChanged(tab: CodeViewerTab): void {
+    this.activeCodeTab = tab;
+  }
+
+  async copyCode(): Promise<void> {
+    const code = this.activeCodeTab?.code ?? this.codeTabs[0]?.code;
+    if (code) {
+      await navigator.clipboard.writeText(code);
+    }
+  }
+
+  openExternalPlatform(): void {
+    const query = encodeURIComponent(`${this.question?.title ?? 'coding problem'} solution`);
+    window.open(`https://leetcode.com/problemset/?search=${query}`, '_blank', 'noopener,noreferrer');
   }
 }

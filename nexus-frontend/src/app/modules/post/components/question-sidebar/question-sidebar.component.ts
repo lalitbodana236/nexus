@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -16,6 +15,7 @@ import { PracticeStoreService } from '../../services/practice-store.service';
 })
 export class QuestionSidebarComponent implements OnInit {
   @Input() showQuestionList = false;
+  @Input() currentTrack: Question['track'] = 'coding';
 
   isCollapsed = false;
   questions: Question[] = [];
@@ -26,7 +26,6 @@ export class QuestionSidebarComponent implements OnInit {
   constructor(
     private readonly store: PracticeStoreService,
     private readonly router: Router,
-    private readonly location: Location,
     private readonly sidebarState: SidebarStateService,
     private readonly userState: UserStateService,
     private readonly authService: AuthService
@@ -69,12 +68,12 @@ export class QuestionSidebarComponent implements OnInit {
     this.sidebarState.toggle();
   }
 
-  goBack(): void {
-    this.location.back();
-  }
-
   openQuestion(questionId: string): void {
     this.router.navigate(['/feed/solutions', questionId]);
+  }
+
+  openTrack(track: Question['track']): void {
+    this.router.navigate(['/feed/track', track]);
   }
 
   onScroll(event: Event): void {

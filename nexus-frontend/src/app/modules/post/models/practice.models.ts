@@ -23,8 +23,15 @@ export interface Question {
   favorite: boolean;
   prompt: string;
   explanation: string;
+  solutions?: QuestionSolution[];
   tags: string[];
   createdAt: string;
+}
+
+export interface QuestionSolution {
+  language: 'java' | 'python' | 'javascript';
+  label: string;
+  code: string;
 }
 
 export interface CreateQuestionPayload {

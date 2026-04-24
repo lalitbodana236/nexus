@@ -1,4 +1,4 @@
-<section class="user-panel">
+<section class="user-panel" [class.collapsed]="collapsed">
   <div class="user-head">
     <div class="avatar">{{ initials }}</div>
     <div *ngIf="!collapsed" class="identity">

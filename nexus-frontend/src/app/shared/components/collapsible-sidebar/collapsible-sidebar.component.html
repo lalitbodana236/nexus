@@ -1,0 +1,9 @@
+<aside class="collapsible-sidebar" [class.collapsed]="collapsed">
+  <header class="collapsible-head">
+    <strong *ngIf="!collapsed">{{ title }}</strong>
+    <button type="button" class="icon-btn" (click)="toggleClick.emit()" [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+      {{ collapsed ? '»' : '«' }}
+    </button>
+  </header>
+  <ng-content></ng-content>
+</aside>

@@ -59,6 +59,21 @@ export class PracticeStoreService {
     return next;
   }
 
+  setQuestionCompleted(questionId: string, completed: boolean): void {
+    const next: Question[] = this.questionSubject.value.map((question) => {
+      if (question.id !== questionId) {
+        return question;
+      }
+
+      return {
+        ...question,
+        status: completed ? 'Done' : 'Todo'
+      };
+    });
+
+    this.questionSubject.next(next);
+  }
+
   addMenuItem(sectionId: string, item: Omit<PracticeMenuItem, 'id'>): void {
     const next = this.menuSubject.value.map((section) => {
       if (section.id !== sectionId) {

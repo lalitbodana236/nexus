@@ -1,6 +1,15 @@
 <div class="dash-shell">
   <header class="dash-topbar">
     <div class="brand">
+      <button
+        type="button"
+        class="icon-action"
+        (click)="toggleSidebar()"
+        [attr.aria-label]="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      >
+        <span *ngIf="isSidebarCollapsed">&raquo;</span>
+        <span *ngIf="!isSidebarCollapsed">&laquo;</span>
+      </button>
       <span class="brand-mark"></span>
       <div>
         <strong>Nexus</strong>
@@ -22,8 +31,8 @@
     </div>
   </header>
 
-  <div class="dash-grid">
-    <app-question-sidebar [showQuestionList]="false"></app-question-sidebar>
+  <div class="dash-grid" [class.sidebar-collapsed]="isSidebarCollapsed">
+    <app-question-sidebar [showQuestionList]="false" [currentTrack]="currentTrack"></app-question-sidebar>
 
     <main class="main-panel">
       <section class="panel overview-panel">
@@ -67,6 +76,7 @@
           <table class="table align-middle mb-0 question-table">
             <thead>
               <tr>
+                <th class="check-col">Done</th>
                 <th>Question</th>
                 <th>Difficulty</th>
                 <th>Status</th>
@@ -75,6 +85,16 @@
             </thead>
             <tbody>
               <tr *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId" (click)="openSolution(question.id)">
+                <td class="check-col">
+                  <input
+                    type="checkbox"
+                    class="complete-check"
+                    [checked]="question.status === 'Done'"
+                    (click)="$event.stopPropagation()"
+                    (change)="toggleCompleted($event, question)"
+                    [attr.aria-label]="'Mark ' + question.title + ' as completed'"
+                  />
+                </td>
                 <td>
                   <div class="title-col">
                     <strong>{{ question.title }}</strong>
@@ -121,12 +141,6 @@
         </div>
       </section>
 
-      <section class="streak-box">
-        <h3>Access Rules</h3>
-        <div class="row"><span>List Access</span><strong>Public</strong></div>
-        <div class="row"><span>Solution Access</span><strong>Login Required</strong></div>
-        <div class="row"><span>Add Questions/Menu</span><strong>Admin Only</strong></div>
-      </section>
     </aside>
   </div>
 </div>

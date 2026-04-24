@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService, UserRole } from '../../../../core/services/auth.service';
+import { SidebarStateService } from '../../../../core/services/sidebar-state.service';
 import { Question, QuestionTrack } from '../../models/practice.models';
 import { PracticeStoreService } from '../../services/practice-store.service';
 
@@ -17,13 +18,15 @@ export class FeedComponent implements OnInit {
   role: UserRole = 'guest';
   visibleCount = 40;
   currentTrack: QuestionTrack = 'coding';
+  isSidebarCollapsed = false;
   readonly monthDays = Array.from({ length: 30 }, (_, index) => index + 1);
 
   constructor(
     private readonly store: PracticeStoreService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly sidebarState: SidebarStateService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +49,11 @@ export class FeedComponent implements OnInit {
 
     this.authService.role$.subscribe((role) => {
       this.role = role;
+    });
+
+    this.sidebarState.initForViewport(window.innerWidth);
+    this.sidebarState.collapsed$.subscribe((collapsed) => {
+      this.isSidebarCollapsed = collapsed;
     });
   }
 
@@ -136,6 +144,16 @@ export class FeedComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/feed']);
+  }
+
+  toggleSidebar(): void {
+    this.sidebarState.toggle();
+  }
+
+  toggleCompleted(event: Event, question: Question): void {
+    event.stopPropagation();
+    const target = event.target as HTMLInputElement;
+    this.store.setQuestionCompleted(question.id, target.checked);
   }
 
   onTableScroll(event: Event): void {

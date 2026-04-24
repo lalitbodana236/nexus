@@ -11,6 +11,13 @@
   padding: 0.45rem 0.5rem;
 }
 
+.sidebar-item.collapsed {
+  width: 34px;
+  height: 34px;
+  justify-content: center;
+  padding: 0;
+}
+
 .sidebar-item:hover {
   background: rgba(39, 70, 137, 0.6);
 }

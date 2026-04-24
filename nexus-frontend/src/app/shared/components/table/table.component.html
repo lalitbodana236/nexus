@@ -1,0 +1,14 @@
+<div class="table-scroll">
+  <table class="table align-middle mb-0 config-table">
+    <thead>
+      <tr>
+        <th *ngFor="let column of columns" [style.width]="column.width">{{ column.label }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows; trackBy: trackByRow" (click)="rowClick.emit(row)">
+        <td *ngFor="let column of columns">{{ valueFor(row, column.key) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

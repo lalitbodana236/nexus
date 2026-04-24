@@ -1,0 +1,24 @@
+<section class="code-viewer">
+  <header class="code-head">
+    <div class="language-tabs" role="tablist">
+      <button
+        type="button"
+        *ngFor="let tab of tabs; let index = index"
+        [class.active]="index === activeIndex"
+        (click)="selectTab(index)"
+      >
+        {{ tab.label }}
+      </button>
+    </div>
+
+    <button type="button" class="copy-btn" (click)="copyActive()">
+      <span aria-hidden="true">⧉</span>
+      {{ copiedLabel ? 'Copied' : 'Copy Code' }}
+    </button>
+  </header>
+
+  <div class="editor-wrap" [style.height]="editorHeight">
+    <div *ngIf="loading" class="loading-state">Loading editor</div>
+    <div #editorHost class="editor-host"></div>
+  </div>
+</section>

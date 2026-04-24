@@ -1,0 +1,27 @@
+.pill {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.pill-easy {
+  color: #0a3d2f;
+  background: #65ddb6;
+}
+
+.pill-medium {
+  color: #573600;
+  background: #ffcc7a;
+}
+
+.pill-hard {
+  color: #5a1320;
+  background: #ffa0b0;
+}
+
+.pill-neutral {
+  color: #e2ebf8;
+  background: #334155;
+}

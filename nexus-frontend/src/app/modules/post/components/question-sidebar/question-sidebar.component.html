@@ -1,11 +1,4 @@
 <aside class="q-sidebar" [class.collapsed]="isCollapsed">
-  <div class="sidebar-top">
-    <button type="button" class="btn btn-sm btn-outline-light" (click)="goBack()">Back</button>
-    <button type="button" class="btn btn-sm btn-outline-info" (click)="toggle()">
-      {{ isCollapsed ? 'Expand' : 'Collapse' }}
-    </button>
-  </div>
-
   <div class="sidebar-body">
     <div class="question-list" *ngIf="!isCollapsed && showQuestionList" (scroll)="onScroll($event)">
       <h3>All Questions</h3>
@@ -22,10 +15,34 @@
       </button>
     </div>
 
-    <div class="empty-note" *ngIf="!isCollapsed && !showQuestionList">
-      <h3>User Panel</h3>
-      <small>Select a question to load question list in sidebar.</small>
-    </div>
+    <nav class="track-nav" *ngIf="!isCollapsed && !showQuestionList" aria-label="Practice tracks">
+      <h3>Practice Tracks</h3>
+      <small>Choose a focused interview path.</small>
+
+      <button type="button" class="track-item" [class.active]="currentTrack === 'coding'" (click)="openTrack('coding')">
+        <span class="track-icon">C</span>
+        <span>
+          <strong>Coding 250</strong>
+          <small>Algorithms and patterns</small>
+        </span>
+      </button>
+
+      <button type="button" class="track-item" [class.active]="currentTrack === 'system-design'" (click)="openTrack('system-design')">
+        <span class="track-icon">S</span>
+        <span>
+          <strong>System Design</strong>
+          <small>Architecture rounds</small>
+        </span>
+      </button>
+
+      <button type="button" class="track-item" [class.active]="currentTrack === 'low-level-design'" (click)="openTrack('low-level-design')">
+        <span class="track-icon">L</span>
+        <span>
+          <strong>Low Level Design</strong>
+          <small>OOP and SOLID</small>
+        </span>
+      </button>
+    </nav>
 
     <app-user-panel
       [collapsed]="isCollapsed"

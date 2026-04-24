@@ -1,0 +1,27 @@
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.config-table {
+  min-width: 680px;
+
+  thead th {
+    background: #16243d;
+    color: #cee2ff;
+    border-bottom-color: rgba(124, 150, 193, 0.3);
+  }
+
+  tbody td {
+    border-bottom-color: rgba(124, 150, 193, 0.2);
+    color: #e2ebfa;
+  }
+
+  tbody tr {
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(34, 64, 131, 0.35);
+    }
+  }
+}

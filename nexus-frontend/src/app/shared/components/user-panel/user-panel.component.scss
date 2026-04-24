@@ -3,6 +3,23 @@
   padding-top: 0.65rem;
 }
 
+.user-panel.collapsed {
+  width: 100%;
+
+  .user-head {
+    justify-content: center;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+  }
+
+  .menu-items {
+    justify-items: center;
+  }
+}
+
 .user-head {
   display: flex;
   align-items: center;

@@ -69,10 +69,67 @@ function buildCodingQuestions(): Question[] {
       prompt: `Solve ${baseTitle} using an optimal approach and explain time/space complexity.`,
       explanation:
         `Break the problem into a pattern-recognition step, choose the right data structure, and validate with edge cases for ${baseTitle}.`,
+      solutions: buildSolutions(baseTitle),
       tags: difficulty === 'Hard' ? ['Patterns', 'Optimization'] : ['Array', 'Hashing'],
       createdAt: new Date(Date.UTC(2026, 0, 1 + (n % 28))).toISOString()
     };
   });
+}
+
+function buildSolutions(title: string): Question['solutions'] {
+  const methodName = title.replace(/[^a-zA-Z0-9]+(.)/g, (_, chr: string) => chr.toUpperCase()).replace(/[^a-zA-Z0-9]/g, '');
+
+  return [
+    {
+      language: 'java',
+      label: 'Java',
+      code: `import java.util.*;
+
+class Solution {
+    public int solve${methodName}(int[] nums, int target) {
+        Map<Integer, Integer> seen = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int need = target - nums[i];
+            if (seen.containsKey(need)) {
+                return i;
+            }
+            seen.put(nums[i], i);
+        }
+        return -1;
+    }
+}`
+    },
+    {
+      language: 'python',
+      label: 'Python',
+      code: `class Solution:
+    def solve(self, nums: list[int], target: int) -> int:
+        seen: dict[int, int] = {}
+        for index, value in enumerate(nums):
+            need = target - value
+            if need in seen:
+                return index
+            seen[value] = index
+        return -1`
+    },
+    {
+      language: 'javascript',
+      label: 'JS',
+      code: `export function solve(nums, target) {
+  const seen = new Map();
+
+  for (let index = 0; index < nums.length; index += 1) {
+    const need = target - nums[index];
+    if (seen.has(need)) {
+      return index;
+    }
+    seen.set(nums[index], index);
+  }
+
+  return -1;
+}`
+    }
+  ];
 }
 
 function buildSystemDesignQuestions(): Question[] {
@@ -99,6 +156,7 @@ function buildSystemDesignQuestions(): Question[] {
     prompt: `Design ${title} with scale assumptions, data flow, APIs, and reliability considerations.`,
     explanation:
       `Start with requirements, define APIs and data model, then discuss scaling, consistency, and failure recovery for ${title}.`,
+    solutions: buildSolutions(title),
     tags: ['Scalability', 'Architecture'],
     createdAt: new Date(Date.UTC(2026, 1, index + 1)).toISOString()
   }));
@@ -128,6 +186,7 @@ function buildLowLevelDesignQuestions(): Question[] {
     prompt: `Design classes, interfaces, and interactions for ${title}.`,
     explanation:
       `Identify entities, assign responsibilities, apply SOLID principles, and model key workflows for ${title}.`,
+    solutions: buildSolutions(title),
     tags: ['OOP', 'Design Patterns'],
     createdAt: new Date(Date.UTC(2026, 2, index + 1)).toISOString()
   }));

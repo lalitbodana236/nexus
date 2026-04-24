@@ -1,0 +1,28 @@
+.collapsible-sidebar {
+  height: 100%;
+  border: 1px solid rgba(136, 157, 194, 0.25);
+  background: rgba(14, 22, 36, 0.88);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: width 180ms ease;
+}
+
+.collapsible-head {
+  min-height: 48px;
+  padding: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(120, 146, 190, 0.25);
+  color: #cbe1ff;
+}
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(118, 145, 188, 0.28);
+  border-radius: 8px;
+  background: rgba(25, 40, 66, 0.65);
+  color: #e2ebf8;
+  font-weight: 700;
+}
