@@ -28,15 +28,20 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: 0.7rem;
   padding: 0.7rem;
   overflow: hidden;
 }
 
-.question-list {
+.sidebar-scroll {
   min-height: 0;
+  flex: 1 1 auto;
   overflow: auto;
+  padding-right: 0.2rem;
+}
+
+.question-list {
+  min-height: 100%;
 
   h3 {
     margin: 0;
@@ -64,6 +69,11 @@
   small {
     color: #93a9ce;
   }
+}
+
+app-user-panel {
+  flex: 0 0 auto;
+  margin-top: auto;
 }
 
 .track-item {
@@ -127,6 +137,13 @@
   font-size: 0.72rem;
   font-weight: 700;
   padding: 0.14rem 0.5rem;
+  text-align: left;
+
+  &.active {
+    border-color: rgba(130, 177, 255, 0.55);
+    background: rgba(30, 58, 138, 0.45);
+    color: #fff;
+  }
 }
 
 .nav-divider {
@@ -182,12 +199,6 @@
     min-height: 72px;
 
     &.collapsed {
-      width: 100%;
-    }
-  }
-
-  .q-sidebar.collapsed {
-    .sidebar-body {
       display: none;
     }
   }

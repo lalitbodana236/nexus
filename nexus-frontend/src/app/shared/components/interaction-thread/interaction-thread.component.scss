@@ -1,0 +1,134 @@
+.interaction-thread {
+  margin-top: 0.8rem;
+  border: 1px solid rgba(120, 146, 190, 0.25);
+  border-radius: 12px;
+  background: rgba(12, 21, 37, 0.75);
+  padding: 0.75rem;
+}
+
+.thread-actions,
+.comment-actions {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-wrap: wrap;
+
+  button {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 1px solid rgba(118, 145, 188, 0.28);
+    border-radius: 8px;
+    background: rgba(25, 40, 66, 0.65);
+    color: #e2ebf8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.55rem;
+
+    &.active {
+      background: rgba(30, 58, 138, 0.55);
+      border-color: rgba(130, 177, 255, 0.5);
+    }
+  }
+}
+
+.comment-count {
+  margin-left: auto;
+  color: #9fb2d3;
+  font-size: 0.75rem;
+}
+
+.new-comment,
+.reply-box {
+  margin-top: 0.6rem;
+  display: grid;
+  gap: 0.45rem;
+
+  textarea {
+    width: 100%;
+    border: 1px solid rgba(71, 85, 105, 0.55);
+    border-radius: 8px;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 0.5rem;
+    resize: vertical;
+  }
+
+  button {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    justify-self: start;
+    border: 1px solid rgba(118, 145, 188, 0.28);
+    border-radius: 8px;
+    background: rgba(25, 40, 66, 0.65);
+    color: #e2ebf8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+  }
+}
+
+.comment-list {
+  margin-top: 0.7rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.comment-card {
+  border: 1px solid rgba(71, 85, 105, 0.55);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.82);
+  padding: 0.65rem 0.7rem;
+
+  p {
+    margin: 0.4rem 0 0;
+    color: #e2e8f0;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+}
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+
+  strong {
+    color: #d9e6fb;
+    font-size: 0.78rem;
+  }
+
+  span {
+    color: #90a5ca;
+    font-size: 0.72rem;
+  }
+}
+
+.replies {
+  margin-top: 0.65rem;
+  margin-left: clamp(0.45rem, calc(var(--depth) * 0.35rem), 1.6rem);
+  border-left: 1px dashed rgba(120, 146, 190, 0.35);
+  padding-left: 0.6rem;
+}
+
+.interaction-thread.compact {
+  padding: 0.6rem;
+}
+
+@media (max-width: 768px) {
+  .comment-count {
+    margin-left: 0;
+  }
+
+  .comment-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+}

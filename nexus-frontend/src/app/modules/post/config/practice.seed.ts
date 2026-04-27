@@ -1,24 +1,11 @@
 import { PracticeMenuSection, Question } from '../models/practice.models';
+import { TOPIC_TRACKS } from './track.config';
 
-export const PRACTICE_MENU_SEED: PracticeMenuSection[] = [
-  {
-    id: 'coding',
-    title: 'Practice',
-    items: [
-      { id: 'dsa', label: 'DSA', path: '/feed/track/coding', active: true }
-    ]
-  },
-  {
-    id: 'system',
-    title: 'System Design',
-    items: [{ id: 'system-design', label: 'System Design Questions', path: '/feed/track/system-design' }]
-  },
-  {
-    id: 'low-level',
-    title: 'Low Level Design',
-    items: [{ id: 'lld', label: 'Low Level Design Questions', path: '/feed/track/low-level-design' }]
-  }
-];
+export const PRACTICE_MENU_SEED: PracticeMenuSection[] = TOPIC_TRACKS.map((track) => ({
+  id: track.id,
+  title: track.label,
+  items: [{ id: `${track.id}-default`, label: `${track.label} Practice`, path: track.path, active: track.id === TOPIC_TRACKS[0].id }]
+}));
 
 const CODING_BASE_TITLES = [
   'Two Sum',

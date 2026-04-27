@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nexus-postgres-prod
+    restart: always
+    env_file:
+      - .env.secrets
+    volumes:
+      - postgres-prod-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: ./nexus-core
+      dockerfile: Dockerfile
+    container_name: nexus-backend-prod
+    restart: always
+    env_file:
+      - .env.secrets
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+  frontend:
+    build:
+      context: ./nexus-frontend
+      dockerfile: Dockerfile
+    container_name: nexus-frontend-prod
+    restart: always
+    env_file:
+      - .env.secrets
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres-prod-data:

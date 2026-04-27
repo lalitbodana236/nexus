@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nexus-postgres
+    restart: unless-stopped
+    env_file:
+      - .env.secrets
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./nexus-core
+    container_name: nexus-backend
+    env_file:
+      - .env.secrets
+    depends_on:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "10001:10001"
+
+  frontend:
+    build:
+      context: ./nexus-frontend
+    container_name: nexus-frontend
+    env_file:
+      - .env.secrets
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres-data:

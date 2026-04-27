@@ -1,0 +1,54 @@
+<section class="interaction-thread" [class.compact]="compact">
+  <header class="thread-actions">
+    <button type="button" [class.active]="thread.userReaction === 'like'" (click)="toggleThreadReaction('like')">
+      Helpful {{ thread.likes }}
+    </button>
+    <button type="button" [class.active]="thread.userReaction === 'dislike'" (click)="toggleThreadReaction('dislike')">
+      Not Helpful {{ thread.dislikes }}
+    </button>
+    <span class="comment-count">{{ thread.comments.length }} {{ thread.comments.length === 1 ? 'comment' : 'comments' }}</span>
+  </header>
+
+  <div class="new-comment">
+    <textarea [attr.rows]="compact ? 2 : 3" [(ngModel)]="draft" placeholder="Write a comment..."></textarea>
+    <button type="button" (click)="addRootComment()">Post Comment</button>
+  </div>
+
+  <ng-container *ngIf="thread.comments.length > 0">
+    <ng-container *ngTemplateOutlet="commentTree; context: { $implicit: thread.comments, depth: 0 }"></ng-container>
+  </ng-container>
+
+  <ng-template #commentTree let-comments let-depth="depth">
+    <div class="comment-list">
+      <article class="comment-card" *ngFor="let comment of comments; trackBy: trackByComment">
+        <div class="comment-meta">
+          <strong>Community Member</strong>
+          <span>{{ formatTimestamp(comment.createdAt) }}</span>
+        </div>
+        <p>{{ comment.text }}</p>
+        <div class="comment-actions">
+          <button type="button" [class.active]="comment.userReaction === 'like'" (click)="reactComment(comment.id, 'like')">
+            Like {{ comment.likes }}
+          </button>
+          <button
+            type="button"
+            [class.active]="comment.userReaction === 'dislike'"
+            (click)="reactComment(comment.id, 'dislike')"
+          >
+            Dislike {{ comment.dislikes }}
+          </button>
+          <button type="button" (click)="toggleReply(comment.id)">Reply</button>
+        </div>
+
+        <div class="reply-box" *ngIf="replyOpen[comment.id]">
+          <textarea rows="2" [(ngModel)]="replyDrafts[comment.id]" placeholder="Write a reply..."></textarea>
+          <button type="button" (click)="addReply(comment.id)">Post Reply</button>
+        </div>
+
+        <div class="replies" *ngIf="comment.replies.length > 0" [style.--depth]="depth + 1">
+          <ng-container *ngTemplateOutlet="commentTree; context: { $implicit: comment.replies, depth: depth + 1 }"></ng-container>
+        </div>
+      </article>
+    </div>
+  </ng-template>
+</section>

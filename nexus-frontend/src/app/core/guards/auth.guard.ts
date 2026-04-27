@@ -7,6 +7,7 @@ import {
   UrlTree
 } from '@angular/router';
 
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -23,8 +24,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    return this.router.createUrlTree(['/login'], {
-      queryParams: { returnUrl: state.url }
-    });
+    window.location.replace(environment.auth.backendLoginUrl);
+    return false;
   }
 }

@@ -5,6 +5,7 @@ import { SharedModule } from '../../shared/shared.module';
 
 import { PostRoutingModule } from './post-routing.module';
 import { FeedComponent } from './components/feed/feed.component';
+import { LearningStudioComponent } from './components/learning-studio/learning-studio.component';
 import { QuestionSidebarComponent } from './components/question-sidebar/question-sidebar.component';
 import { QuestionCreateComponent } from './components/question-create/question-create.component';
 import { QuestionDetailComponent } from './components/question-detail/question-detail.component';
@@ -13,6 +14,7 @@ import { MenuConfigComponent } from './components/menu-config/menu-config.compon
 @NgModule({
   declarations: [
     FeedComponent,
+    LearningStudioComponent,
     QuestionCreateComponent,
     QuestionDetailComponent,
     MenuConfigComponent,

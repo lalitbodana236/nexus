@@ -22,6 +22,11 @@
   overflow-x: auto;
 
   button {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
     border: 1px solid transparent;
     border-radius: 8px;
     background: transparent;
@@ -41,6 +46,11 @@
 }
 
 .copy-btn {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   border: 1px solid rgba(118, 145, 188, 0.28);
   border-radius: 8px;
   background: rgba(25, 40, 66, 0.65);
@@ -49,10 +59,6 @@
   font-weight: 700;
   padding: 0.38rem 0.65rem;
   white-space: nowrap;
-
-  span {
-    margin-right: 0.25rem;
-  }
 
   &:hover {
     background: rgba(39, 70, 137, 0.6);

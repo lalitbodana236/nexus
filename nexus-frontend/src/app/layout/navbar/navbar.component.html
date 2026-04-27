@@ -17,6 +17,7 @@
       <ul class="navbar-nav ms-auto">
         <li class="nav-item" *ngFor="let link of navLinks">
           <a
+            *ngIf="link.path; else externalLink"
             class="nav-link"
             [routerLink]="link.path"
             routerLinkActive="active"
@@ -24,6 +25,9 @@
           >
             {{ link.label }}
           </a>
+          <ng-template #externalLink>
+            <a class="nav-link" [href]="link.href">{{ link.label }}</a>
+          </ng-template>
         </li>
       </ul>
     </div>

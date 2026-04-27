@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { SidebarStateService } from '../../../../core/services/sidebar-state.service';
 import { CodeViewerTab } from '../../../../shared/components/code-viewer/code-viewer.component';
+import { TOPIC_TRACKS } from '../../config/track.config';
 import { Question } from '../../models/practice.models';
 import { PracticeStoreService } from '../../services/practice-store.service';
 
@@ -13,6 +14,7 @@ import { PracticeStoreService } from '../../services/practice-store.service';
   styleUrls: ['./question-detail.component.scss']
 })
 export class QuestionDetailComponent implements OnInit {
+  readonly topicTracks = TOPIC_TRACKS;
   question?: Question;
   prevQuestion?: Question;
   nextQuestion?: Question;

@@ -25,7 +25,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     public OAuth2AuthenticationSuccessHandler(
             UserRepository userRepository,
-            @Value("${app.security.frontend.success-url:http://localhost:3000/auth/callback?login=success}") String frontendSuccessUrl) {
+            @Value("${app.security.frontend.success-url:http://localhost/auth/callback?login=success}") String frontendSuccessUrl) {
         this.userRepository = userRepository;
         this.frontendSuccessUrl = frontendSuccessUrl;
     }

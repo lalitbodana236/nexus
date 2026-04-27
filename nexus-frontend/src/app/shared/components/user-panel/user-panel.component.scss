@@ -1,6 +1,7 @@
 .user-panel {
   border-top: 1px solid rgba(120, 146, 190, 0.25);
   padding-top: 0.65rem;
+  min-width: 0;
 }
 
 .user-panel.collapsed {
@@ -25,6 +26,10 @@
   align-items: center;
   gap: 0.6rem;
   margin-bottom: 0.6rem;
+  padding: 0.4rem 0.45rem;
+  border: 1px solid rgba(118, 145, 188, 0.22);
+  border-radius: 10px;
+  background: rgba(25, 40, 66, 0.35);
 }
 
 .avatar {
@@ -41,17 +46,24 @@
 
 .identity {
   display: grid;
+  min-width: 0;
 
   strong {
     color: #e2ebf8;
     font-size: 0.82rem;
     line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   small {
     color: #9eb2d3;
     text-transform: capitalize;
     font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

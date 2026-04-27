@@ -1,5 +1,5 @@
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
-export type QuestionTrack = 'coding' | 'system-design' | 'low-level-design';
+export type QuestionTrack = string;
 
 export interface PracticeMenuItem {
   id: string;
@@ -21,6 +21,8 @@ export interface Question {
   difficulty: Difficulty;
   status: 'Todo' | 'Done';
   favorite: boolean;
+  concept?: string;
+  examples?: string[];
   prompt: string;
   explanation: string;
   solutions?: QuestionSolution[];
@@ -38,7 +40,10 @@ export interface CreateQuestionPayload {
   title: string;
   track: QuestionTrack;
   difficulty: Difficulty;
+  concept?: string;
+  examples?: string[];
   prompt: string;
   explanation: string;
+  solutions?: QuestionSolution[];
   tags: string[];
 }

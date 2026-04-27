@@ -21,18 +21,24 @@
       <span class="nav-section" [class.is-learning]="mode === 'theory'" [class.is-practice]="mode === 'practice'">
         {{ mode === 'theory' ? 'Learning' : 'Practice' }}
       </span>
-      <a role="button" [class.active]="currentTrack === 'coding'" (click)="openCoding()">DSA</a>
-      <a role="button" [class.active]="currentTrack === 'system-design'" (click)="openSystemDesign()">System Design</a>
-      <a role="button" [class.active]="currentTrack === 'low-level-design'" (click)="openLowLevelDesign()">Low Level Design</a>
+      <a
+        role="button"
+        *ngFor="let track of topicTracks"
+        [class.active]="currentTrack === track.id"
+        (click)="openTrack(track.id)"
+      >
+        {{ track.label }}
+      </a>
     </nav>
 
     <div class="top-actions">
+      <app-theme-toggle></app-theme-toggle>
       <div class="header-mode-switch" role="tablist" aria-label="Workspace mode">
         <button type="button" [class.active]="mode === 'theory'" (click)="setMode('theory')">Learn</button>
         <button type="button" [class.active]="mode === 'practice'" (click)="setMode('practice')">Practice</button>
       </div>
       <button *ngIf="!isLoggedIn" type="button" class="btn btn-sm btn-outline-light" (click)="goToLogin()">Login</button>
-      <button *ngIf="isAdmin" type="button" class="btn btn-sm btn-primary" (click)="goToCreate()">Add Question</button>
+      <button *ngIf="isAdmin" type="button" class="btn btn-sm btn-outline-info" (click)="goToLearningStudio()">Learning Studio</button>
       <button *ngIf="isAdmin" type="button" class="btn btn-sm btn-warning" (click)="goToMenuConfig()">Menu Admin</button>
     </div>
   </header>
@@ -42,7 +48,10 @@
       [showQuestionList]="false"
       [currentTrack]="currentTrack"
       [mode]="mode"
+      [learningLessons]="learningLessons"
+      [selectedLessonId]="selectedLessonId"
       (modeChange)="setMode($event)"
+      (lessonChange)="selectLesson($event)"
     ></app-question-sidebar>
 
     <main class="main-panel">
@@ -55,16 +64,67 @@
         </div>
 
         <section class="theory-panel" *ngIf="mode === 'theory'">
-          <h2>{{ conceptTitle }}</h2>
-          <p>{{ conceptSummary }}</p>
-          <div class="topic-preview">
-            <strong>Preview Topic:</strong>
-            <span>{{ previewTopic }}</span>
-          </div>
-          <ul>
-            <li *ngFor="let point of conceptPoints">{{ point }}</li>
-          </ul>
-          <button type="button" class="action-btn" (click)="setMode('practice')">Go to Practice Questions</button>
+          <ng-container *ngIf="selectedLesson as lesson; else noLessonState">
+            <h2>{{ lesson.title }}</h2>
+            <p>{{ lesson.summary }}</p>
+            <div class="topic-preview" *ngIf="lesson.tags.length > 0">
+              <strong>Topic:</strong>
+              <span>{{ lesson.tags[0] }}</span>
+            </div>
+
+            <div class="lesson-blocks">
+              <article class="lesson-block" *ngFor="let block of lesson.blocks" [ngSwitch]="block.type">
+                <h3>{{ block.title }}</h3>
+
+                <p *ngSwitchCase="'theory'">{{ block.content }}</p>
+                <p *ngSwitchCase="'step'">{{ block.content }}</p>
+                <p *ngSwitchCase="'example'">{{ block.content }}</p>
+                <p *ngSwitchCase="'note'">{{ block.content }}</p>
+
+                <ul *ngSwitchCase="'checklist'" class="checklist">
+                  <li *ngFor="let item of block.items">{{ item }}</li>
+                </ul>
+
+                <div *ngSwitchCase="'code'" class="code-box">
+                  <small>{{ block.language || 'text' }}</small>
+                  <pre><code>{{ block.code || block.content }}</code></pre>
+                </div>
+
+                <div *ngSwitchCase="'class-diagram'" class="diagram-box">
+                  <small>Class Diagram</small>
+                  <pre>{{ block.code || block.content }}</pre>
+                </div>
+
+                <div *ngSwitchCase="'component-diagram'" class="diagram-box">
+                  <small>Component Diagram</small>
+                  <pre>{{ block.code || block.content }}</pre>
+                </div>
+
+                <div *ngSwitchCase="'image'" class="image-box">
+                  <img *ngIf="block.imageUrl" [src]="block.imageUrl" [alt]="block.title" />
+                  <p *ngIf="!block.imageUrl">{{ block.content }}</p>
+                </div>
+
+                <p *ngSwitchDefault>{{ block.content }}</p>
+              </article>
+            </div>
+
+            <button type="button" class="action-btn" (click)="setMode('practice')">Go to Practice Questions</button>
+
+            <section class="learn-discussion">
+              <h3>Discussion</h3>
+              <p>Ask doubts, share hints, and discuss this learning topic.</p>
+              <app-interaction-thread
+                [targetType]="'learn-lesson'"
+                [targetId]="currentTrack + ':' + (selectedLessonId || 'overview')"
+              ></app-interaction-thread>
+            </section>
+          </ng-container>
+          <ng-template #noLessonState>
+            <h2>{{ conceptTitle }}</h2>
+            <p>{{ conceptSummary }}</p>
+            <button type="button" class="action-btn" *ngIf="isAdmin" (click)="goToLearningStudio()">Create First Lesson</button>
+          </ng-template>
         </section>
 
         <section class="practice-panel" *ngIf="mode === 'practice'">
@@ -127,6 +187,7 @@
             </table>
           </div>
         </section>
+
       </section>
     </main>
   </div>

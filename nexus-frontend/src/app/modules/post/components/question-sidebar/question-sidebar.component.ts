@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { SidebarStateService } from '../../../../core/services/sidebar-state.service';
 import { UserStateService } from '../../../../core/services/user-state.service';
+import { BACKEND_ROADMAP_TRACKS, DEFAULT_TRACK_ID, TOPIC_TRACKS } from '../../config/track.config';
+import { LearningLesson } from '../../models/learning.models';
 import { Question } from '../../models/practice.models';
 import { PracticeStoreService } from '../../services/practice-store.service';
 
@@ -14,10 +16,15 @@ import { PracticeStoreService } from '../../services/practice-store.service';
   styleUrls: ['./question-sidebar.component.scss']
 })
 export class QuestionSidebarComponent implements OnInit {
+  readonly topicTracks = TOPIC_TRACKS;
+  readonly backendTracks = BACKEND_ROADMAP_TRACKS;
   @Input() showQuestionList = false;
-  @Input() currentTrack: Question['track'] = 'coding';
+  @Input() currentTrack: Question['track'] = DEFAULT_TRACK_ID;
   @Input() mode: 'theory' | 'practice' = 'practice';
+  @Input() learningLessons: LearningLesson[] = [];
+  @Input() selectedLessonId = '';
   @Output() modeChange = new EventEmitter<'theory' | 'practice'>();
+  @Output() lessonChange = new EventEmitter<string>();
 
   isCollapsed = false;
   questions: Question[] = [];
@@ -40,14 +47,12 @@ export class QuestionSidebarComponent implements OnInit {
     });
 
     this.store.questions$.subscribe((questions) => {
-      const order: Record<Question['track'], number> = {
-        coding: 0,
-        'system-design': 1,
-        'low-level-design': 2
-      };
-
       this.questions = [...questions].sort((a, b) => {
-        const trackDiff = order[a.track] - order[b.track];
+        const trackA = this.topicTracks.findIndex((track) => track.id === a.track);
+        const trackB = this.topicTracks.findIndex((track) => track.id === b.track);
+        const orderA = trackA < 0 ? this.topicTracks.length + 1 : trackA;
+        const orderB = trackB < 0 ? this.topicTracks.length + 1 : trackB;
+        const trackDiff = orderA - orderB;
         if (trackDiff !== 0) {
           return trackDiff;
         }
@@ -66,18 +71,6 @@ export class QuestionSidebarComponent implements OnInit {
     return this.questions.slice(0, this.visibleCount);
   }
 
-  get learningTopics(): string[] {
-    if (this.currentTrack === 'coding') {
-      return ['Arrays', 'Hashing', 'Two Pointers', 'Sliding Window', 'Trees', 'Graphs', 'Dynamic Programming'];
-    }
-
-    if (this.currentTrack === 'system-design') {
-      return ['Requirements', 'APIs', 'Data Modeling', 'Caching', 'Queues', 'Consistency', 'Reliability'];
-    }
-
-    return ['Entities', 'Responsibilities', 'Interfaces', 'SOLID', 'Design Patterns', 'Workflow Modeling'];
-  }
-
   toggle(): void {
     this.sidebarState.toggle();
   }
@@ -92,6 +85,10 @@ export class QuestionSidebarComponent implements OnInit {
 
   setMode(mode: 'theory' | 'practice'): void {
     this.modeChange.emit(mode);
+  }
+
+  selectLesson(lessonId: string): void {
+    this.lessonChange.emit(lessonId);
   }
 
   onScroll(event: Event): void {
@@ -113,7 +110,7 @@ export class QuestionSidebarComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/feed/track/coding']);
+    this.router.navigate(['/feed/track', DEFAULT_TRACK_ID]);
   }
 
   @HostListener('window:resize', ['$event'])

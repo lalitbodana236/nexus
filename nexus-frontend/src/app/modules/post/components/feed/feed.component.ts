@@ -3,7 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService, UserRole } from '../../../../core/services/auth.service';
 import { SidebarStateService } from '../../../../core/services/sidebar-state.service';
+import { DEFAULT_TRACK_ID, TOPIC_TRACKS, getTopicTrackDefinition, getTrackDefinition } from '../../config/track.config';
+import { LearningLesson } from '../../models/learning.models';
 import { Question, QuestionTrack } from '../../models/practice.models';
+import { LearningStoreService } from '../../services/learning-store.service';
 import { PracticeStoreService } from '../../services/practice-store.service';
 
 @Component({
@@ -13,12 +16,15 @@ import { PracticeStoreService } from '../../services/practice-store.service';
   styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit {
+  readonly topicTracks = TOPIC_TRACKS;
   allQuestions: Question[] = [];
   trackQuestions: Question[] = [];
   questions: Question[] = [];
+  learningLessons: LearningLesson[] = [];
+  selectedLessonId = '';
   role: UserRole = 'guest';
   visibleCount = 40;
-  currentTrack: QuestionTrack = 'coding';
+  currentTrack: QuestionTrack = DEFAULT_TRACK_ID;
   isSidebarCollapsed = false;
   mode: 'theory' | 'practice' = 'practice';
 
@@ -27,7 +33,8 @@ export class FeedComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly authService: AuthService,
-    private readonly sidebarState: SidebarStateService
+    private readonly sidebarState: SidebarStateService,
+    private readonly learningStore: LearningStoreService
   ) {}
 
   ngOnInit(): void {
@@ -38,14 +45,23 @@ export class FeedComponent implements OnInit {
 
     this.route.paramMap.subscribe((params) => {
       const rawTrack = params.get('track');
-      const track: QuestionTrack =
-        rawTrack === 'system-design' || rawTrack === 'low-level-design' || rawTrack === 'coding'
-          ? rawTrack
-          : 'coding';
+      const track = getTopicTrackDefinition(rawTrack)?.id ?? DEFAULT_TRACK_ID;
 
       this.currentTrack = track;
       this.visibleCount = 40;
       this.applyTrackFilter();
+    });
+
+    this.route.queryParamMap.subscribe((params) => {
+      const mode = params.get('mode');
+      const lessonId = params.get('lesson');
+
+      if (mode === 'theory' || mode === 'practice') {
+        this.mode = mode;
+      }
+
+      this.selectedLessonId = lessonId ?? this.selectedLessonId;
+      this.ensureSelectedLesson();
     });
 
     this.authService.role$.subscribe((role) => {
@@ -56,6 +72,11 @@ export class FeedComponent implements OnInit {
     this.sidebarState.collapsed$.subscribe((collapsed) => {
       this.isSidebarCollapsed = collapsed;
     });
+
+    this.learningStore.lessons$.subscribe(() => {
+      this.learningLessons = this.learningStore.getLessonsByTrack(this.currentTrack);
+      this.ensureSelectedLesson();
+    });
   }
 
   get visibleQuestions(): Question[] {
@@ -63,51 +84,38 @@ export class FeedComponent implements OnInit {
   }
 
   get conceptTitle(): string {
-    if (this.currentTrack === 'coding') {
-      return 'Concept First: DSA Patterns';
+    if (this.selectedLesson) {
+      return this.selectedLesson.title;
     }
 
-    if (this.currentTrack === 'system-design') {
-      return 'Concept First: System Design Thinking';
-    }
-
-    return 'Concept First: Low Level Design';
+    return this.currentTrackDef?.conceptTitle ?? 'Concept First';
   }
 
   get conceptSummary(): string {
-    if (this.currentTrack === 'coding') {
-      return 'Start with arrays, hashing, two pointers, sliding window, recursion, trees, graphs, dynamic programming, and complexity analysis.';
+    if (this.selectedLesson) {
+      return this.selectedLesson.summary;
     }
 
-    if (this.currentTrack === 'system-design') {
-      return 'Understand requirements, APIs, data models, capacity estimates, caching, queues, consistency, and failure handling.';
-    }
-
-    return 'Learn entities, responsibilities, interfaces, SOLID, design patterns, and how to convert requirements into clean object models.';
+    return this.currentTrackDef?.conceptSummary ?? '';
   }
 
   get previewTopic(): string {
-    if (this.currentTrack === 'coding') {
-      return 'Arrays & Hashing';
+    if (this.selectedLesson?.tags.length) {
+      return this.selectedLesson.tags[0];
     }
 
-    if (this.currentTrack === 'system-design') {
-      return 'Requirements and API Design';
-    }
-
-    return 'Entities and Responsibilities';
+    return this.currentTrackDef?.sampleTopic ?? '';
   }
 
   get conceptPoints(): string[] {
-    if (this.currentTrack === 'coding') {
-      return ['Arrays & Hashing', 'Two Pointers & Sliding Window', 'Trees, Graphs, Dynamic Programming'];
+    if (this.selectedLesson) {
+      return this.selectedLesson.blocks
+        .filter((block) => block.type === 'step' || block.type === 'checklist' || block.type === 'theory')
+        .map((block) => block.title)
+        .slice(0, 6);
     }
 
-    if (this.currentTrack === 'system-design') {
-      return ['Requirements and APIs', 'Capacity, Data Modeling, Caching', 'Reliability, Scale, and Trade-offs'];
-    }
-
-    return ['Entities and Responsibilities', 'Interfaces, SOLID, and Patterns', 'Modeling Real Workflows'];
+    return this.currentTrackDef?.conceptPoints ?? [];
   }
 
   get isAdmin(): boolean {
@@ -119,35 +127,27 @@ export class FeedComponent implements OnInit {
   }
 
   get trackTitle(): string {
-    if (this.currentTrack === 'system-design') {
-      return 'System Design Practice';
-    }
-
-    if (this.currentTrack === 'low-level-design') {
-      return 'Low Level Design Practice';
-    }
-
-    return 'DSA Practice';
+    return `${this.currentTrackDef?.label ?? 'Track'} Practice`;
   }
 
   get trackSubtitle(): string {
-    return 'Switch between theory and practice from the left panel.';
+    return 'Switch between Learn and Practice from the header. Learning topics are managed from Learning Studio.';
+  }
+
+  get selectedLesson(): LearningLesson | undefined {
+    return this.learningLessons.find((lesson) => lesson.id === this.selectedLessonId);
+  }
+
+  get currentTrackDef() {
+    return getTrackDefinition(this.currentTrack);
   }
 
   openSolution(questionId: string): void {
     this.router.navigate(['/feed/solutions', questionId]);
   }
 
-  openSystemDesign(): void {
-    this.router.navigate(['/feed/track/system-design']);
-  }
-
-  openLowLevelDesign(): void {
-    this.router.navigate(['/feed/track/low-level-design']);
-  }
-
-  openCoding(): void {
-    this.router.navigate(['/feed/track/coding']);
+  openTrack(track: QuestionTrack): void {
+    this.router.navigate(['/feed/track', track]);
   }
 
   goToCreate(): void {
@@ -156,6 +156,10 @@ export class FeedComponent implements OnInit {
 
   goToMenuConfig(): void {
     this.router.navigate(['/feed/admin/menu']);
+  }
+
+  goToLearningStudio(): void {
+    this.router.navigate(['/feed/learning/new']);
   }
 
   goToLogin(): void {
@@ -179,6 +183,21 @@ export class FeedComponent implements OnInit {
 
   setMode(mode: 'theory' | 'practice'): void {
     this.mode = mode;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { mode },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  selectLesson(lessonId: string): void {
+    this.selectedLessonId = lessonId;
+    this.mode = 'theory';
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { lesson: lessonId, mode: 'theory' },
+      queryParamsHandling: 'merge'
+    });
   }
 
   onTableScroll(event: Event): void {
@@ -197,5 +216,19 @@ export class FeedComponent implements OnInit {
   private applyTrackFilter(): void {
     this.trackQuestions = this.allQuestions.filter((item) => item.track === this.currentTrack);
     this.questions = [...this.trackQuestions];
+    this.learningLessons = this.learningStore.getLessonsByTrack(this.currentTrack);
+    this.ensureSelectedLesson();
+  }
+
+  private ensureSelectedLesson(): void {
+    if (this.learningLessons.length === 0) {
+      this.selectedLessonId = '';
+      return;
+    }
+
+    const hasSelected = this.learningLessons.some((lesson) => lesson.id === this.selectedLessonId);
+    if (!hasSelected) {
+      this.selectedLessonId = this.learningLessons[0].id;
+    }
   }
 }

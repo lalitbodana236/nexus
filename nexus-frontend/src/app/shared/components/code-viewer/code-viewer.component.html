@@ -11,10 +11,7 @@
       </button>
     </div>
 
-    <button type="button" class="copy-btn" (click)="copyActive()">
-      <span aria-hidden="true">⧉</span>
-      {{ copiedLabel ? 'Copied' : 'Copy Code' }}
-    </button>
+    <button type="button" class="copy-btn" (click)="copyActive()">{{ copiedLabel ? 'Copied' : 'Copy Code' }}</button>
   </header>
 
   <div class="editor-wrap" [style.height]="editorHeight">

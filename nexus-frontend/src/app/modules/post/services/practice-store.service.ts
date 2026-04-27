@@ -49,8 +49,11 @@ export class PracticeStoreService {
       difficulty: payload.difficulty,
       status: 'Todo',
       favorite: false,
+      concept: payload.concept,
+      examples: payload.examples,
       prompt: payload.prompt,
       explanation: payload.explanation,
+      solutions: payload.solutions,
       tags: payload.tags,
       createdAt: now
     };

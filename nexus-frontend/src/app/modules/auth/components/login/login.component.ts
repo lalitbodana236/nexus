@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -9,25 +8,11 @@ import { AuthService } from '../../../../core/services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router
-  ) {}
+export class LoginComponent implements OnInit {
 
-  loginAsUser(): void {
-    this.authService.loginAsUser();
-    this.redirectAfterLogin();
-  }
+  constructor(private readonly authService: AuthService) {}
 
-  loginAsAdmin(): void {
-    this.authService.loginAsAdmin();
-    this.redirectAfterLogin();
-  }
-
-  private redirectAfterLogin(): void {
-    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/feed';
-    this.router.navigateByUrl(returnUrl);
+  ngOnInit(): void {
+    window.location.replace(this.authService.backendLoginUrl);
   }
 }

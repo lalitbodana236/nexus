@@ -1,0 +1,29 @@
+docker exec -it nexus-postgres-prod psql -U postgres
+✅ Correct command in PostgreSQL
+
+Use:
+
+\l
+
+or
+
+\list
+
+👉 This will list all databases.
+
+📌 Other useful commands
+Connect to a database:
+\c your_db_name
+Show tables:
+\dt
+Describe a table:
+\d table_name
+Exit:
+\q
+
+
+docker compose up -d --build
+powershell
+
+docker compose -f docker-compose.prod.yml up -d --build
+Dev uses docker-compose.yml. Prod uses docker-compose.prod.yml.

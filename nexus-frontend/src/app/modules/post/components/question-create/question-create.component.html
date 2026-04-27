@@ -3,48 +3,110 @@
 
   <section class="form-shell">
     <header>
-      <h1>Create Question</h1>
-      <p>Admin-only screen: add questions for Coding, System Design, or Low Level Design.</p>
+      <h1>Content Studio</h1>
+      <p>Create full learning content with concept notes, examples, and multiple solutions.</p>
       <a class="btn btn-sm btn-outline-light" routerLink="/feed">Back to Dashboard</a>
     </header>
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="card p-4">
-      <div class="mb-3">
-        <label class="form-label">Title</label>
-        <input class="form-control" formControlName="title" placeholder="Ex: Longest Substring Without Repeating Characters" />
-      </div>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="content-card">
+      <section>
+        <h2>Basics</h2>
+        <div class="grid-2">
+          <label>
+            <span>Title</span>
+            <input formControlName="title" placeholder="Ex: Longest Substring Without Repeating Characters" />
+          </label>
 
-      <div class="mb-3">
-        <label class="form-label">Track</label>
-        <select class="form-select" formControlName="track">
-          <option *ngFor="let option of trackOptions" [ngValue]="option">{{ option }}</option>
-        </select>
-      </div>
+          <label>
+            <span>Track</span>
+            <select formControlName="track">
+              <option *ngFor="let option of trackOptions" [ngValue]="option.id">{{ option.label }}</option>
+            </select>
+          </label>
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label">Difficulty</label>
-        <select class="form-select" formControlName="difficulty">
-          <option *ngFor="let option of difficultyOptions" [ngValue]="option">{{ option }}</option>
-        </select>
-      </div>
+        <div class="grid-2">
+          <label>
+            <span>Difficulty</span>
+            <select formControlName="difficulty">
+              <option *ngFor="let option of difficultyOptions" [ngValue]="option">{{ option }}</option>
+            </select>
+          </label>
 
-      <div class="mb-3">
-        <label class="form-label">Prompt</label>
-        <textarea class="form-control" rows="4" formControlName="prompt"></textarea>
-      </div>
+          <label>
+            <span>Tags (comma-separated)</span>
+            <input formControlName="tags" placeholder="Array, Sliding Window" />
+          </label>
+        </div>
+      </section>
 
-      <div class="mb-3">
-        <label class="form-label">Explanation</label>
-        <textarea class="form-control" rows="5" formControlName="explanation"></textarea>
-      </div>
+      <section>
+        <h2>Theory Concept</h2>
+        <label>
+          <span>Concept Explanation</span>
+          <textarea rows="4" formControlName="concept"></textarea>
+        </label>
+      </section>
 
-      <div class="mb-4">
-        <label class="form-label">Tags (comma-separated)</label>
-        <input class="form-control" formControlName="tags" placeholder="Array, Sliding Window" />
-      </div>
+      <section>
+        <div class="section-head">
+          <h2>Examples</h2>
+          <button type="button" class="btn btn-sm btn-outline-info" (click)="addExample()">Add Example</button>
+        </div>
+        <div formArrayName="examples" class="stack">
+          <div class="array-row" *ngFor="let control of examples.controls; let i = index">
+            <textarea rows="3" [formControlName]="i" placeholder="Write an example, input/output, or scenario"></textarea>
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeExample(i)">Remove</button>
+          </div>
+        </div>
+      </section>
 
-      <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">Save Question</button>
+      <section>
+        <h2>Problem Statement</h2>
+        <label>
+          <span>Prompt</span>
+          <textarea rows="4" formControlName="prompt"></textarea>
+        </label>
+      </section>
+
+      <section>
+        <h2>Explanation</h2>
+        <label>
+          <span>Solution Explanation</span>
+          <textarea rows="5" formControlName="explanation"></textarea>
+        </label>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Multiple Solutions</h2>
+          <button type="button" class="btn btn-sm btn-outline-info" (click)="addSolution()">Add Solution</button>
+        </div>
+        <div formArrayName="solutions" class="stack">
+          <div class="solution-row" *ngFor="let control of solutions.controls; let i = index" [formGroupName]="i">
+            <div class="grid-2">
+              <label>
+                <span>Label</span>
+                <input formControlName="label" placeholder="Java / Python / JS" />
+              </label>
+              <label>
+                <span>Language</span>
+                <select formControlName="language">
+                  <option *ngFor="let option of languageOptions" [ngValue]="option">{{ option }}</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              <span>Code</span>
+              <textarea rows="7" formControlName="code"></textarea>
+            </label>
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeSolution(i)">Remove</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Save Content</button>
         <a routerLink="/feed" class="btn btn-outline-secondary">Cancel</a>
       </div>
     </form>

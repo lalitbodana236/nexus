@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export type UserRole = 'guest' | 'user' | 'admin';
 
@@ -11,6 +12,18 @@ export class AuthService {
   private readonly roleSubject = new BehaviorSubject<UserRole>(this.readInitialRole());
 
   readonly role$ = this.roleSubject.asObservable();
+
+  get canUseGoogleLogin(): boolean {
+    return environment.auth.enableGoogleLogin;
+  }
+
+  get canUseMockLogin(): boolean {
+    return environment.auth.enableMockLogin;
+  }
+
+  get backendLoginUrl(): string {
+    return environment.auth.backendLoginUrl;
+  }
 
   isAuthenticated(): boolean {
     return this.roleSubject.value !== 'guest';
@@ -34,6 +47,10 @@ export class AuthService {
 
   logout(): void {
     this.updateRole('guest');
+  }
+
+  loginWithGoogle(): void {
+    window.location.href = environment.auth.backendLoginUrl;
   }
 
   private updateRole(role: UserRole): void {

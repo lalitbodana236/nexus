@@ -1,0 +1,110 @@
+<div class="studio-layout">
+  <app-question-sidebar [showQuestionList]="false"></app-question-sidebar>
+
+  <section class="studio-shell">
+    <header>
+      <h1>Learning Studio</h1>
+      <p>Build FAANG-grade learning lessons with structured blocks.</p>
+      <div class="header-actions">
+        <app-theme-toggle></app-theme-toggle>
+        <a class="btn btn-sm btn-outline-info" routerLink="/feed/questions/new">Add Question</a>
+        <a class="btn btn-sm btn-outline-light" routerLink="/feed">Back to Dashboard</a>
+      </div>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="studio-card">
+      <section>
+        <h2>Lesson Setup</h2>
+        <div class="grid-2">
+          <label>
+            <span>Track</span>
+            <select formControlName="track">
+              <option *ngFor="let option of trackOptions" [ngValue]="option.id">{{ option.label }}</option>
+            </select>
+          </label>
+          <label>
+            <span>Tags (comma-separated)</span>
+            <input formControlName="tags" placeholder="Scalability, Caching, FAANG" />
+          </label>
+        </div>
+        <label>
+          <span>Lesson Title</span>
+          <input formControlName="title" placeholder="Ex: Design URL Shortener End to End" />
+        </label>
+        <label>
+          <span>Lesson Summary</span>
+          <textarea rows="3" formControlName="summary"></textarea>
+        </label>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Lesson Blocks</h2>
+          <div class="actions-inline">
+            <button type="button" class="btn btn-sm btn-outline-info" (click)="addBlock('theory')">Add Theory</button>
+            <button type="button" class="btn btn-sm btn-outline-info" (click)="addBlock('code')">Add Code</button>
+            <button type="button" class="btn btn-sm btn-outline-info" (click)="addBlock('class-diagram')">Add Diagram</button>
+          </div>
+        </div>
+
+        <div formArrayName="blocks" class="stack">
+          <article class="block-card" *ngFor="let control of blocks.controls; let i = index" [formGroupName]="i">
+            <div class="block-head">
+              <h3>Block {{ i + 1 }}</h3>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeBlock(i)">Remove</button>
+            </div>
+
+            <div class="grid-2">
+              <label>
+                <span>Block Type</span>
+                <select formControlName="type">
+                  <option *ngFor="let option of blockTypes" [ngValue]="option">{{ option }}</option>
+                </select>
+              </label>
+              <label>
+                <span>Title</span>
+                <input formControlName="title" placeholder="Ex: Why caching matters" />
+              </label>
+            </div>
+
+            <label>
+              <span>Content</span>
+              <textarea rows="3" formControlName="content" placeholder="Theory, notes, or step explanation"></textarea>
+            </label>
+
+            <div class="grid-2">
+              <label>
+                <span>Code Language</span>
+                <select formControlName="language">
+                  <option value="text">text</option>
+                  <option value="java">java</option>
+                  <option value="python">python</option>
+                  <option value="javascript">javascript</option>
+                </select>
+              </label>
+              <label>
+                <span>Image URL (for diagram/image block)</span>
+                <input formControlName="imageUrl" placeholder="https://..." />
+              </label>
+            </div>
+
+            <label>
+              <span>Code</span>
+              <textarea rows="6" formControlName="code" placeholder="Code snippet or mermaid-style diagram text"></textarea>
+            </label>
+
+            <label>
+              <span>Checklist/Steps (one line each)</span>
+              <textarea rows="4" formControlName="items" placeholder="Line 1&#10;Line 2&#10;Line 3"></textarea>
+            </label>
+          </article>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Publish Lesson</button>
+        <a routerLink="/feed" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </section>
+</div>

@@ -7,6 +7,9 @@ import { CodeViewerComponent } from './components/code-viewer/code-viewer.compon
 import { BadgeComponent } from './components/badge/badge.component';
 import { TableComponent } from './components/table/table.component';
 import { CollapsibleSidebarComponent } from './components/collapsible-sidebar/collapsible-sidebar.component';
+import { FormsModule } from '@angular/forms';
+import { InteractionThreadComponent } from './components/interaction-thread/interaction-thread.component';
+import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 
 @NgModule({
   declarations: [
@@ -15,17 +18,22 @@ import { CollapsibleSidebarComponent } from './components/collapsible-sidebar/co
     CodeViewerComponent,
     BadgeComponent,
     TableComponent,
-    CollapsibleSidebarComponent
+    CollapsibleSidebarComponent,
+    InteractionThreadComponent,
+    ThemeToggleComponent
   ],
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   exports: [
     CommonModule,
+    FormsModule,
     SidebarItemComponent,
     UserPanelComponent,
     CodeViewerComponent,
     BadgeComponent,
     TableComponent,
-    CollapsibleSidebarComponent
+    CollapsibleSidebarComponent,
+    InteractionThreadComponent,
+    ThemeToggleComponent
   ]
 })
 export class SharedModule {}

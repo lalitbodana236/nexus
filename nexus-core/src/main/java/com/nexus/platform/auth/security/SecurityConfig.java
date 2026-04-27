@@ -37,7 +37,7 @@ public class SecurityConfig {
             OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
             AuthRateLimitingFilter authRateLimitingFilter,
             @Value("${app.security.require-ssl:false}") boolean requireSsl,
-            @Value("${app.security.cors.allowed-origins:http://localhost:3000}") List<String> allowedOrigins,
+            @Value("${app.security.cors.allowed-origins:http://localhost,http://127.0.0.1,http://localhost:80}") List<String> allowedOrigins,
             @Value("${app.security.cors.allowed-methods:GET,POST,PUT,PATCH,DELETE,OPTIONS}") List<String> allowedMethods,
             @Value("${app.security.cors.allowed-headers:Authorization,Content-Type,X-Requested-With,X-CSRF-TOKEN}") List<String> allowedHeaders) {
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;

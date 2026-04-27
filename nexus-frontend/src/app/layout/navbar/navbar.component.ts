@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+import { environment } from '../../../environments/environment';
 import { NavLink } from '../../shared/models/nav-link.model';
 
 @Component({
@@ -12,6 +13,6 @@ export class NavbarComponent {
     { label: 'Home', path: '/feed' },
     { label: 'Feed', path: '/feed' },
     { label: 'Profile', path: '/profile' },
-    { label: 'Login', path: '/login' }
+    { label: 'Login', href: environment.auth.backendLoginUrl }
   ];
 }

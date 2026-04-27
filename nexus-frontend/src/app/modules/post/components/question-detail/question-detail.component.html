@@ -19,12 +19,13 @@
 
     <nav class="top-nav">
       <span class="nav-section">Practice</span>
-      <a routerLink="/feed/track/coding">DSA</a>
-      <a routerLink="/feed/track/system-design">System Design</a>
-      <a routerLink="/feed/track/low-level-design">Low Level Design</a>
+      <a *ngFor="let track of topicTracks" [routerLink]="track.path">{{ track.label }}</a>
     </nav>
 
-    <a routerLink="/feed" class="btn btn-sm btn-outline-light">&lsaquo; Back to Public Lists</a>
+    <div class="topbar-actions">
+      <app-theme-toggle></app-theme-toggle>
+      <a routerLink="/feed" class="btn btn-sm btn-outline-light">&lsaquo; Back to Public Lists</a>
+    </div>
   </header>
 
   <div class="detail-layout" [class.sidebar-collapsed]="isSidebarCollapsed">
@@ -46,6 +47,18 @@
         <p>{{ question.prompt }}</p>
       </article>
 
+      <article class="detail-card" *ngIf="question.concept">
+        <h2>Theory Concept</h2>
+        <p>{{ question.concept }}</p>
+      </article>
+
+      <article class="detail-card" *ngIf="question.examples?.length">
+        <h2>Examples</h2>
+        <ul class="example-list">
+          <li *ngFor="let example of question.examples">{{ example }}</li>
+        </ul>
+      </article>
+
       <article class="detail-card">
         <h2>Solution / Explanation</h2>
         <p>{{ question.explanation }}</p>
@@ -62,8 +75,10 @@
           </div>
 
           <div class="code-actions">
-            <button type="button" class="btn btn-sm btn-outline-info" (click)="copyCode()">Copy Code</button>
-            <button type="button" class="btn btn-sm btn-primary" (click)="openExternalPlatform()">Solve on External Platform</button>
+            <button type="button" class="btn btn-sm btn-outline-info code-action-btn" (click)="copyCode()">Copy Code</button>
+            <button type="button" class="btn btn-sm btn-primary code-action-btn" (click)="openExternalPlatform()">
+              Solve on External Platform
+            </button>
           </div>
         </div>
 
@@ -76,9 +91,15 @@
       </article>
 
       <div class="nav-row">
-        <button type="button" class="btn btn-outline-info" (click)="goPrev()" [disabled]="!prevQuestion">Previous</button>
-        <button type="button" class="btn btn-outline-info" (click)="goNext()" [disabled]="!nextQuestion">Next</button>
+        <button type="button" class="btn btn-outline-info nav-btn" (click)="goPrev()" [disabled]="!prevQuestion">Previous</button>
+        <button type="button" class="btn btn-outline-info nav-btn" (click)="goNext()" [disabled]="!nextQuestion">Next</button>
       </div>
+
+      <article class="detail-card">
+        <h2>Discussion</h2>
+        <p>Share your approach, alternatives, and trade-offs.</p>
+        <app-interaction-thread [targetType]="'question'" [targetId]="question.id"></app-interaction-thread>
+      </article>
     </section>
   </div>
 </div>

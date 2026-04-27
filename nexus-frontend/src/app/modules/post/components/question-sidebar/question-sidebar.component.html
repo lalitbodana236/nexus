@@ -1,81 +1,65 @@
 <aside class="q-sidebar" [class.collapsed]="isCollapsed">
   <div class="sidebar-body">
-    <div class="question-list" *ngIf="!isCollapsed && showQuestionList" (scroll)="onScroll($event)">
-      <h3>All Questions</h3>
-      <small>{{ questions.length }} items</small>
+    <div class="sidebar-scroll">
+      <div class="question-list" *ngIf="!isCollapsed && showQuestionList" (scroll)="onScroll($event)">
+        <h3>All Questions</h3>
+        <small>{{ questions.length }} items</small>
 
-      <button
-        type="button"
-        class="q-item"
-        *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId"
-        (click)="openQuestion(question.id)"
-      >
-        <span class="q-title">{{ question.title }}</span>
-        <span class="q-meta">{{ question.track }} | {{ question.difficulty }}</span>
-      </button>
-    </div>
-
-    <nav class="track-nav" *ngIf="!isCollapsed && !showQuestionList" aria-label="Practice tracks">
-      <h3>Topics</h3>
-      <small>Choose track and learn concepts first.</small>
-
-      <button type="button" class="track-item" [class.active]="currentTrack === 'coding'" (click)="openTrack('coding')">
-        <span class="track-icon">D</span>
-        <span>
-          <strong>DSA</strong>
-          <small>Topic: Arrays & Hashing</small>
-        </span>
-      </button>
-
-      <button type="button" class="track-item" [class.active]="currentTrack === 'system-design'" (click)="openTrack('system-design')">
-        <span class="track-icon">S</span>
-        <span>
-          <strong>System Design</strong>
-          <small>Topic: Requirements & APIs</small>
-        </span>
-      </button>
-
-      <button type="button" class="track-item" [class.active]="currentTrack === 'low-level-design'" (click)="openTrack('low-level-design')">
-        <span class="track-icon">L</span>
-        <span>
-          <strong>Low Level Design</strong>
-          <small>Topic: Entities & SOLID</small>
-        </span>
-      </button>
-
-      <div class="topic-list" *ngIf="mode === 'theory'">
-        <small>Current Track Topics</small>
-        <span class="topic-chip" *ngFor="let topic of learningTopics">{{ topic }}</span>
+        <button
+          type="button"
+          class="q-item"
+          *ngFor="let question of visibleQuestions; trackBy: trackByQuestionId"
+          (click)="openQuestion(question.id)"
+        >
+          <span class="q-title">{{ question.title }}</span>
+          <span class="q-meta">{{ question.track }} | {{ question.difficulty }}</span>
+        </button>
       </div>
 
-      <div class="nav-divider"></div>
-      <h3>Backend Roadmap</h3>
-      <small>Content-ready tracks for the next phases.</small>
+      <nav class="track-nav" *ngIf="!isCollapsed && !showQuestionList" aria-label="Practice tracks">
+        <h3>Topics</h3>
+        <small>Choose track and learn concepts first.</small>
 
-      <button type="button" class="track-item soon" disabled>
-        <span class="track-icon">J</span>
-        <span>
-          <strong>Java</strong>
-          <small>Topic: Core Java</small>
-        </span>
-      </button>
+        <button
+          type="button"
+          class="track-item"
+          *ngFor="let track of topicTracks"
+          [class.active]="currentTrack === track.id"
+          (click)="openTrack(track.id)"
+        >
+          <span class="track-icon">{{ track.label.charAt(0) }}</span>
+          <span>
+            <strong>{{ track.label }}</strong>
+            <small>Topic: {{ track.sampleTopic }}</small>
+          </span>
+        </button>
 
-      <button type="button" class="track-item soon" disabled>
-        <span class="track-icon">SB</span>
-        <span>
-          <strong>Spring Boot</strong>
-          <small>Topic: REST API Basics</small>
-        </span>
-      </button>
+        <div class="topic-list" *ngIf="mode === 'theory'">
+          <small>Current Track Topics</small>
+          <button
+            type="button"
+            class="topic-chip"
+            *ngFor="let lesson of learningLessons"
+            [class.active]="lesson.id === selectedLessonId"
+            (click)="selectLesson(lesson.id)"
+          >
+            {{ lesson.title }}
+          </button>
+        </div>
 
-      <button type="button" class="track-item soon" disabled>
-        <span class="track-icon">DK</span>
-        <span>
-          <strong>Docker & Kubernetes</strong>
-          <small>Topic: Container Fundamentals</small>
-        </span>
-      </button>
-    </nav>
+        <div class="nav-divider"></div>
+        <h3>Backend Roadmap</h3>
+        <small>Content-ready tracks for the next phases.</small>
+
+        <button type="button" class="track-item soon" disabled *ngFor="let track of backendTracks">
+          <span class="track-icon">{{ track.label.charAt(0) }}</span>
+          <span>
+            <strong>{{ track.label }}</strong>
+            <small>Topic: {{ track.sampleTopic }}</small>
+          </span>
+        </button>
+      </nav>
+    </div>
 
     <app-user-panel
       [collapsed]="isCollapsed"
